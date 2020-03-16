@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'share.apps.ShareConfig' #iserrano0
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
