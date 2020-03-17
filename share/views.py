@@ -6,4 +6,4 @@ from share.models import Script
 #iserrano0
 def index(request):
     if request.method == "GET":
-        return HttpResponse("Hello World!")
+        return render(request, 'share/index.html')  #iserrano2
