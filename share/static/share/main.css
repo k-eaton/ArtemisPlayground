@@ -1,24 +1,19 @@
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .column1 {
   width: 20vw;
-  margin: 20px;
+  margin-right: 10px;
 }
 
 .column2 {
-  width: 60vw;
-  margin: 20px;
+  width: 50vw;
+  margin-right: 30px;
 }
 
 .column3 {
-  width: 20vw;
-  margin: 20px;
+  width: 30vw;
+  margin-left: 30px;
 }
 
-.box {
-  
+img {
+  max-width: 100%;
+  height: auto;
 }

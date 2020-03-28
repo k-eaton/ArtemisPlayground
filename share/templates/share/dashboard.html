@@ -2,44 +2,102 @@
 {% extends "share/base.html" %}
 {% block content %}
 
-    <div class="columns">
-        <div class="column">
-            <div class="tile is-ancestor has-text-centered">
-                <div style="margin: auto;" class="tile is-parent">
-                    <div class="tile is-child box">
-                        <h1 class="title is-2"> Hello &nbsp<span style="color:#1496ed">{{ user.username }}</span></h1>
+<link rel="stylesheet" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\bulma-0.8.0\css\bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.0.6/css/all.css"></script>
+<link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css">
 
-                        <h4 class="title is-5">You can publish new problems here:</h4>
-                        <a class="button is-info is-medium" href="{% url 'share:publish_problem' %}">Publish a new problem</a>
-                    </div>
-                </div>
-            </div>
+<style>
+  /* .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  } */
+</style>
+<body>
+  <section class="index">
+    <div class="container">
+      <div class="columns">
 
-                <!-- This is only for testing to see the objects were passed to the template by the view -->
-                <hr>
-                    <div class="box">
-                    <h2 class="title" style="color:#00d1b2">Problems defined by you:</h2>
-                    {% for p in my_problems %}
-                            <div class="content"> {{ p.title }}
-                              <a class="button is-primary is-small" href="{% url 'share:show_my_problem' p.id %}">Show more ...</a>
-                                                                  <!-- create show_my_problem route right away -->
+        <!-- beginning of chat section -->
+        <div class="column1">
+          <!--  <p> this is a test, should be on the right</p> -->
 
-                            </div>
-                    {% endfor %}
-                    </div>
+          <!-- insert buttons: Group-Finder & Chat -->
+          <div class="buttons">
 
-                    <div class="box">
-                      <h2 class="title " style="color:#00d1b2">Scripts written by you:</h2>
-                    {% for s in my_scripts %}
-                            <div class="content">
-                                <br>Script Title: {{ s.title }}, Solves: {{ s.problem.title }}, posted by {{s.problem.coder.user.username}}
+            <!-- Group Finder Button -->
+            <button class="button is-warning is-light is-outlined">
+               <span class="is-outlined">
+                 <i class="fab fa-Group Finder"></i>
+               </span>
+               <span>Group Finder</span>
+             </button>
 
-                                <a class="button is-primary is-small" href="{% url 'share:show_my_script' s.id %}">Show more ...</a>
-                                                                  <!-- create show_my_script route right away -->
-                            </div>
-                    {% endfor %}
-                    </div>
+             <br>
+
+             <!-- Chat Button -->
+            <button class="button is-warning is-light is-outlined">
+              <span>Chat</span>
+            </button>
+
+          </div>
+
         </div>
+        <!-- end chat section -->
+
+        <!-- beginning of main feed section -->
+        <div class="column2">
+          <!-- <p> this is a test, should be in the middle </p> -->
+
+          <div class="notification is-warning">
+            <figure class="image is-square">
+              <img src="static\share\images\Hollow_Knight.png" alt="Hollow_Knight">
+            </figure>
+            <br>
+            <figure class="image is-64x64">
+              <p> <img src="static\share\images\user.png" alt="user" align="top"> Username </p>
+            </figure>
+            <br>
+            <p class="is-size-6">
+              Sprite models from the game #Hollow Knight!
+            </p>
+
+          </div>
+
+        </div>
+        <!-- end main feed section -->
+
+        <!-- beginning trending section -->
+        <div class="column3">
+          <!-- <p> this is a test, should be on the right </p> -->
+          <!-- the idea hear is to show an image that is trending/has the highest amount of reblogs/likes/upvotes etc...-->
+          <figure class="image is-primary is-256x256">
+            <img src="static\share\images\diablo" alt="diablo">
+            <br>
+            <h2 style="color:#996633"; class="title is-4"> Diablo 3 Fan Art </h2>
+            <div class="tags are-normal">
+              <span class="tag is-warning is-light">#Diablo</span>
+              <span class="tag is-warning is-light">#blizzard</span>
+              <span class="tag is-warning is-light">#Diablo 3</span>
+              <span class="tag is-warning is-light">#D3</span>
+            </div>
+          </figure>
+          <br>
+          <br>
+          <h1 style="color:#cc0000"; class="title is-4"> Trending </h1>
+          <div class="tags are-large">
+            <span class="tag is-danger is-light">blizzard</span>
+            <span class="tag is-danger is-light">Unity</span>
+            <span class="tag is-danger is-light">Skyrim</span>
+            <span class="tag is-danger is-light">Overwatch</span>
+          </div>
+        </div>
+        <!-- end trending section -->
+
+      </div>
     </div>
+  </section>
+</body>
+
 
 {% endblock content %}
