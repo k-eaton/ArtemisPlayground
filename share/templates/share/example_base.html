@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Artemis's Playground</title>
+    <title>Python Thinkers</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'share/bulma-0.8.0/css/bulma.css' %}"/>
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
@@ -11,14 +11,13 @@
 </head>
 
 <body>
-<nav class="navbar is-warning" role="navigation" aria-label="main navigation">
+<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="{% url 'share:index' %}">
-            <img src="{% static 'share/images/icon.png' %}" alt=" icon" width="40" height="60">
-            Artemis's<br>Playground
+            <img src="{% static 'share/images/108562276-skull-and-crossed-bones-simple-icon-on-transparent-background-.jpg' %}" alt=" icon" width="40" height="60">
+            Python <br>Thinkers
         </a>
         </a class="navbar-item">
-
 
       <!--   https://bulma.io/documentation/components/navbar/  for responsive sites-->
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarData">
@@ -53,30 +52,17 @@
 
    <div class="navbar-end">
          <div class="navbar-item">
-
-           <!-- Search bar addon -->
-           <div class="field has-addons">
-             <div class="control">
-               <input class="input" type="text" placeholder="Search">
-             </div>
-             <div class="control">
-               <a class="button is-warning is-light is-outlined">
-                 Search
-               </a>
-             </div>
-           </div>
-
            <div class="buttons">
 
              {% if request.path == "/login" or request.path == "/loguser" %}
-             <a class="button is-warning" href="{% url 'share:signup' %}">Signup</a>
+             <a class="button is-primary" href="{% url 'share:signup' %}">Signup</a>
 
               {% elif request.path == "/signup"  %}
 
-              <a class="button is-warning" href="{% url 'share:login' %}">Login</a>
+              <a class="button is-primary" href="{% url 'share:login' %}">Login</a>
 
              {% else   %}
-             <a class="button is-warning is-light is-outlined" href="{% url 'share:logout' %}">Logout</a>
+             <a class="button is-primary" href="{% url 'share:logout' %}">Logout</a>
 
              {% endif %}
 

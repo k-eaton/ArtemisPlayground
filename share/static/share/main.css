@@ -1,0 +1,24 @@
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.column1 {
+  width: 20vw;
+  margin: 20px;
+}
+
+.column2 {
+  width: 60vw;
+  margin: 20px;
+}
+
+.column3 {
+  width: 20vw;
+  margin: 20px;
+}
+
+.box {
+  
+}

@@ -1,9 +1,120 @@
+<!-- index renders a list of all the problems in the DB -->
+<!-- should implement a search button at some point -->
 {% extends "share/base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\bulma-0.8.0\css\bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.0.6/css/all.css"></script>
+<link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css">
 
+<style>
+  /* .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  } */
+</style>
+<body>
+  <section class="index">
+    <div class="container">
+      <div class="columns">
 
-<h1 style="color:red">Hello CS 170/270!!  </h1>
+        <!-- beginning of chat section -->
+        <div class="column1">
+          <!--  <p> this is a test, should be on the right</p> -->
 
+          <!-- insert buttons: Group-Finder & Chat -->
+          <div class="buttons">
+
+            <!-- Group Finder Button -->
+            <button class="button is-warning is-light is-outlined">
+               <span class="is-outlined">
+                 <i class="fab fa-Group Finder"></i>
+               </span>
+               <span>Group Finder</span>
+             </button>
+
+             <br>
+
+             <!-- Chat Button -->
+            <button class="button is-warning is-light is-outlined">
+              <span>Chat</span>
+            </button>
+
+          </div>
+
+        </div>
+        <!-- end chat section -->
+
+        <!-- beginning of main feed section -->
+        <div class="column2">
+          <!-- <p> this is a test, should be in the middle </p> -->
+
+          <div class="notification is-warning">
+            <figure class="image is-square">
+              <img src="static\share\images\Hollow_Knight.png" alt="Hollow_Knight">
+            </figure>
+            <br>
+            <figure class="image is-primary is-64x64">
+            <p> <img src="static\share\images\user.png" alt="user" align="right"> Username </p>
+            </figure>
+            <br>
+            <p class="is-size-6">
+              Sprite models from the game #Hollow Knight!
+            </p>
+
+          </div>
+
+          <!-- <div class="box">
+            <article class="media">
+              <div class="media-centered">
+                <figure class="image is-64x64">
+                  <img src="static\share\images\Hollow_Knight.png" alt="Hollow_Knight">
+                </figure>
+              </div>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong>John Smith</strong> <small>@johnsmith</small> <small>31m</small>
+                    <br>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla egestas. Nullam condimentum luctus turpis.
+                  </p>
+                </div>
+                <nav class="level is-mobile">
+                  <div class="level-left">
+                    <a class="level-item" aria-label="reply">
+                      <span class="icon is-small">
+                        <i class="fas fa-reply" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                    <a class="level-item" aria-label="retweet">
+                      <span class="icon is-small">
+                        <i class="fas fa-retweet" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                    <a class="level-item" aria-label="like">
+                      <span class="icon is-small">
+                        <i class="fas fa-heart" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                  </div>
+                </nav>
+              </div>
+            </article>
+          </div> -->
+
+        </div>
+        <!-- end main feed section -->
+
+          <!-- beginning trending section -->
+        <div class="column3">
+          <p> this is a test, should be on the right </p>
+        </div>
+        <!-- end trending section -->
+
+      </div>
+    </div>
+  </section>
+</body>
 
 {% endblock content %}
