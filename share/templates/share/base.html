@@ -32,11 +32,11 @@
     <div id="navbarData" class="navbar-menu is-active" >
       <!-- navbar-menu hidden in mobile devices -->
       <!-- is-actice makes id show in mobile devices -->
-   <div class="navbar-start">
+    <div class="navbar-start">
 
-     <a class="navbar-item" href="{% url 'share:dashboard' %}">My Dashboard</a>
 
-   </div>
+
+    </div>
 
    <div class="navbar-end">
          <div class="navbar-item">
@@ -52,6 +52,9 @@
                </a>
              </div>
            </div>
+           <!-- End Search bar addon -->
+
+           <a class="navbar-item" href="{% url 'share:dashboard' %}">My Dashboard</a>
 
            <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
@@ -78,8 +81,10 @@
               </div>
 
             </div>
+
          </div>
        </div>
+
      </div>
    </nav>
 

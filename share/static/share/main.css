@@ -1,6 +1,6 @@
 .column1 {
   width: 20vw;
-  margin-right: 10px;
+  margin-right: 30px;
 }
 
 .column2 {
@@ -16,4 +16,8 @@
 img {
   max-width: 100%;
   height: auto;
+}
+
+.hidden-checkbox {
+  opacity: 0;
 }

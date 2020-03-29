@@ -34,7 +34,7 @@ def create(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        coder_yet = request.POST['coder_yet_checkbox']
+        coder_yet = request.POST.get('coder_yet_checkbox')
 
         if username is not None and email is not None and password is not None: # checking that they are not None
             if not username or not email or not password: # checking that they are not empty
@@ -91,7 +91,7 @@ def dashboard(request):
         if not user.is_authenticated:
             return redirect("share:login")
         else:
-            my_problems = Problem.objects.filter(coder=user.coder.id)  
+            my_problems = Problem.objects.filter(coder=user.coder.id)
             my_scripts =  Script.objects.filter(coder=user.coder.id)
 
             return render(request, "share/dashboard.html", {"my_scripts": my_scripts, "my_problems": my_problems })
