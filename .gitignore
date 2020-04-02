@@ -1,3 +1,11 @@
 db.sqlite3
+__pycache__/
+*.pyc
+herokuCommands.txt
 **/__pycache__
 herokuCommands.txt
+*.png
+*.jpg
+*.jpeg
+*.gif
+

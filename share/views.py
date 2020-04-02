@@ -9,10 +9,18 @@ from .models import Script, Problem, Coder
 from django.contrib.auth.models import User
 
 # Create your views here.
-#iserrano0
+#iserrano3
 def index(request):
     if request.method == "GET":
-        return render(request, 'share/index.html')  #iserrano2
+        if request.user.is_authenticated:
+            user = request.user
+            all_problems = Problem.objects.all()   # all_problems is a list object [   ]
+
+            return render(request, "share/index.html", {"user":user, "all_problems": all_problems})
+        else:
+            return redirect("share:login")
+    else:
+        return HttpResponse(status=500)
 
 #iserrano2
 def signup(request):
@@ -26,7 +34,7 @@ def create(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        coder_yet = request.POST['coder_yet_checkbox']
+        coder_yet = request.POST.get('coder_yet_checkbox')
 
         if username is not None and email is not None and password is not None: # checking that they are not None
             if not username or not email or not password: # checking that they are not empty
@@ -76,10 +84,34 @@ def logout_view(request):
     logout(request)
     return redirect("share:login")
 
-#iserrano2
+#iserrano3
 def dashboard(request):
-    pass
+    if request.method == "GET":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login")
+        else:
+            my_problems = Problem.objects.filter(coder=user.coder.id)
+            my_scripts =  Script.objects.filter(coder=user.coder.id)
+
+            return render(request, "share/dashboard.html", {"my_scripts": my_scripts, "my_problems": my_problems })
 
 #iserrano2
 def publish_problem(request):
+    pass
+
+#iserrano3
+def show_my_problem(request, problem_id):
+    pass
+
+#iserrano3
+def show_my_script(request, script_id):
+    pass
+
+#iserrano3
+def show_problem(request, problem_id):
+    pass
+
+#iserrano3
+def show_script(request, script_id):
     pass
