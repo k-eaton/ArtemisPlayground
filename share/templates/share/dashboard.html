@@ -1,8 +1,7 @@
-<!-- index renders a list of all the problems in the DB -->
-<!-- should implement a search button at some point -->
+<!-- list problems and scripts that belong to this coder -->
 {% extends "share/base.html" %}
-
 {% block content %}
+
 <link rel="stylesheet" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\bulma-0.8.0\css\bulma.min.css">
 <script defer src="https://use.fontawesome.com/releases/v5.0.6/css/all.css"></script>
 <link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css">
@@ -25,22 +24,23 @@
 
           <!-- insert buttons: Group-Finder & Chat -->
           <div class="buttons">
-
-            <!-- Group Finder Button -->
-            <button class="button is-warning is-light is-outlined">
-               <span class="is-outlined">
-                 <i class="fab fa-Group Finder"></i>
-               </span>
-               <span>Group Finder</span>
-             </button>
-
-             <br>
-
-             <!-- Chat Button -->
-            <button class="button is-warning is-light is-outlined">
-              <span>Chat</span>
-            </button>
-
+            <ul>
+              <li>
+                <!-- Group Finder Button -->
+                <button class="button is-medium is-warning is-light is-outlined">
+                   <span class="is-outlined">
+                     <i class="fab fa-Group Finder"></i>
+                   </span>
+                   <span>Group Finder</span>
+                 </button>
+              </li>
+              <li>
+                 <!-- Chat Button -->
+                <button class="button is-medium is-warning is-light is-outlined">
+                  <span>Chat</span>
+                </button>
+              </li>
+            </ul>
           </div>
 
         </div>
@@ -48,9 +48,33 @@
 
         <!-- beginning of main feed section -->
         <div class="column2">
-          <p> an idea for index is that you will instead be shown all media that is trending </p>
-          <p> dashboard can be media that is submitted by users you follow </p>
-          <p> please click on dashboard to see the full wire frame </p>
+          <!-- <p> this is a test, should be in the middle </p> -->
+
+          <div class="notification is-warning">
+            <figure class="image is-square">
+              <img src="static\share\images\Hollow_Knight.png" alt="Hollow_Knight">
+            </figure>
+            <br>
+            <article class="media notification is-warning">
+              <figure class="media-left">
+                <span class="image is-64x64">
+                  <img src="static\share\images\user.png" >
+                </span>
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                  <a>
+                    <h1 class="title is-size-4"> Username </h1>
+                  </a>
+                  <p class="subtitle is-size-6">
+                    Sprite models from the game <span class="tag is-warning is-light">#Hollow Knight</span>
+                  </p>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
         </div>
         <!-- end main feed section -->
 
@@ -85,5 +109,6 @@
     </div>
   </section>
 </body>
+
 
 {% endblock content %}

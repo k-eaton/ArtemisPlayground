@@ -1,0 +1,23 @@
+.column1 {
+  width: 20vw;
+  margin-right: 30px;
+}
+
+.column2 {
+  width: 50vw;
+  margin-right: 30px;
+}
+
+.column3 {
+  width: 30vw;
+  margin-left: 30px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.hidden-checkbox {
+  opacity: 0;
+}
