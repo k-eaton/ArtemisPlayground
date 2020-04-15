@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os, boto3
-import dj_database_url
+# import dj_database_url
 import django_heroku
 from decouple import config
 
