@@ -7,11 +7,18 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Script, Problem, Coder
 #iserrano2 - import User model
 from django.contrib.auth.models import User
+# s3Integration
+import os, json, boto3
+
+
+
 
 # Create your views here.
 #iserrano3
 def index(request):
     if request.method == "GET":
+
+
         if request.user.is_authenticated:
             user = request.user
             all_problems = Problem.objects.all()   # all_problems is a list object [   ]
@@ -115,3 +122,17 @@ def show_problem(request, problem_id):
 #iserrano3
 def show_script(request, script_id):
     pass
+
+# s3Integration
+def show_media(request):
+    s3 = boto3.resource('s3',region_name='us-east-2')
+    bucket = s3.Bucket('artemisplayground')
+    object = bucket.Object('diablo.jpg')
+    object.download_file('diablo.jpg')
+    # with open('FILE_NAME', 'wb') as f:
+    #     s3.download_fileobj('artemisplayground', 'diablo.jpg', f)
+    # f = s3.download_file('artemisplayground', 'diablo.jpg', 'diablo.jpg')
+    # for bucket in s3.buckets.all():
+    #     print(bucket.name)
+    # s3.download_file('artemisplayground', 'diablo.jpg', 'diablo.jpg')
+    return diablo.jpg
