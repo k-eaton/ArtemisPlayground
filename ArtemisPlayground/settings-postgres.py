@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
 
     'share.apps.ShareConfig', #iserrano0
+    'storages', # s3Integration
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -129,6 +130,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+# s3Integration
+AWS_S3_OBJECT_PARAMETERS = {
+    'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
+    'CacheControl': 'max-age=94608000',
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
