@@ -7,21 +7,12 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Script, Problem, Coder
 #iserrano2 - import User model
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404 #iserrano4
+#iserrano4 - import new models created
+#REMEMBER TO DO THEM ONE AT A TIME
+# from .models import Media, Post, Comment
 
 # Create your views here.
-#iserrano3
-def index(request):
-    if request.method == "GET":
-        if request.user.is_authenticated:
-            user = request.user
-            all_problems = Problem.objects.all()   # all_problems is a list object [   ]
-
-            return render(request, "share/index.html", {"user":user, "all_problems": all_problems})
-        else:
-            return redirect("share:login")
-    else:
-        return HttpResponse(status=500)
-
 #iserrano2
 def signup(request):
     if request.user.is_authenticated:
@@ -31,9 +22,9 @@ def signup(request):
 #iserrano2
 def create(request):
     if request.method == "POST":
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
+        username = request.POST['Username']
+        email = request.POST['Email']
+        password = request.POST['Password']
         coder_yet = request.POST.get('coder_yet_checkbox')
 
         if username is not None and email is not None and password is not None: # checking that they are not None
@@ -85,6 +76,19 @@ def logout_view(request):
     return redirect("share:login")
 
 #iserrano3
+def index(request):
+    if request.method == "GET":
+        if request.user.is_authenticated:
+            user = request.user
+            all_problems = Problem.objects.all()   # all_problems is a list object [   ]
+
+            return render(request, "share/index.html", {"user":user, "all_problems": all_problems})
+        else:
+            return redirect("share:login")
+    else:
+        return HttpResponse(status=500)
+
+#iserrano3
 def dashboard(request):
     if request.method == "GET":
         user = request.user
@@ -96,6 +100,63 @@ def dashboard(request):
 
             return render(request, "share/dashboard.html", {"my_scripts": my_scripts, "my_problems": my_problems })
 
+#iserrano4
+def edit_profile(request, user_id):
+    if request.method == "GET":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login")
+
+        #button is pressed, retrieve user information
+        user_info = get_object_or_404(User, pk=user.id)
+
+        #make sure the logged in user is the correct one
+        if user_info.id == user.id:
+            return render(request, "share/edit_profile.html", {"user_info":user_info})
+        else:
+            return render(request, "share/index.html",
+            {"Error": "Please login to edit profile"})
+
+
+def update_profile(request):
+    if request.method == "POST":
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse(status=500)
+
+        user_info = get_object_or_404(User, pk=user_id)
+
+        if not request.POST['Username'] or not request.POST['Email'] or not request.POST['Password']:
+            return render(request, "share/edit_profile.html", {"user_info":user_info, "Error":"Fill out required fields"})
+
+        else:
+            #figure out how to get icon change option
+            first_name = request.POST['First Name']
+            last_name = request.POST['Last Name']
+            username = request.POST['Username']
+            email = request.POST['Email']
+            password = request.POST['Password']
+            bio = request.POST['Bio']
+
+def delete_profile(request):
+    if request.method == "POST":
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse(status=500)
+
+        user_info = get_object_or_404(User, pk=user_id)
+
+        if user_info.id == user.id:
+            User.objects.get(pk=user_id).delete()
+            return redirect("share/signup.html")
+        else:
+            return render(request, "share/edit_profile.html", {"user":user, "error": "Unable to delete account"})
+
+    else:
+        return HttpResponse(status=500)
+
+
+#useless code
 #iserrano2
 def publish_problem(request):
     pass

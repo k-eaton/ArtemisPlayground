@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+#attempt hashtags later:
+#https://stream-blog.netlify.app/build-a-scalable-twitter-clone-with-django-and-stream/#hashtags-feeds
+# from django.template.defaultfilters import slugify
+
 
 # Create your models here.
 #iserrano1 - create Coder model
@@ -48,3 +52,57 @@ class Script(models.Model):
 
     created = models.DateField(auto_now=True)
     updated = models.DateField(auto_now=True)
+
+# #iserrano4 - create Media Model
+# #REMEMBER TO DO THEM ONE AT A TIME
+# class Media(models.Model):
+#     def__str__(self):
+#         return self.title
+#
+#     #FK
+#     user = models.ForeignKey(User, on_delete=models.CASCADE) #double do we need the null, true or false
+#
+#     media_name = models.CharField(max_length=100, null=False, blank=False, unique=True)
+#     file_name = models.CharField(max_length=200, null=False, blank=False, unique=True)
+#     video = models.BooleanField(default=False)
+#
+# #iserrano4 - create Post Model
+# #REMEMBER TO DO THEM ONE AT A TIME
+# class Post(models.Model):
+#     def__str__(self):
+#         return self.title
+#
+#     #FK
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     media = models.ForeignKey(Media, on_delete=models.CASCADE)
+#
+#     post_header = models.CharField(max_length=50, blank=True, unique=False)
+#     post_body = models.TextField(max_length=500, blank=True, unique=False)
+#     post_created = DateTimeField(auto_now=True, auto_now_add=True)
+#
+#     # #attemping to incorporate parse_hastags
+#     # tags = []
+#     # for hastag in self.parse_hastags():
+#     #     tags.append(feed_manager.get_feed('hastag', hastag))
+#     # return tags
+#
+# #iserrano4 - create Comment Model
+# #REMEMBER TO DO THEM ONE AT A TIME
+# class Comment(models.Model):
+#     def__str__(self):
+#         return self.title
+#
+#     #FK
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+#
+#     comment_created = DateTimeField(auto_now=True, auto_now_add=True)
+#     comment_body = models.TextField(max_length=200, unique=False, blank=False)
+
+#iserrano4 - attempt to create Hastag Model
+#REMEMBER TO DO THEM ONE AT A TIME
+# class Hastag(models.Model):
+#     def__str__(self):
+#         return self.title
+#
+#     hastag = models.CharField(max_length=100, blank=False, unique=True)

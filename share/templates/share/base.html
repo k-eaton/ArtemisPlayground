@@ -58,7 +58,7 @@
 
            <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
-                More
+                try to insert user icon
               </a>
 
               <div class="navbar-dropdown">
@@ -72,6 +72,7 @@
                       <a class="button is-warning is-light is-outlined" href="{% url 'share:login' %}">Login</a>
 
                      {% else   %}
+                     <a class="button is-warning is-light is-outlined" href="{% url 'share:edit_profile' %}">Edit Profile</a>
                      <a class="button is-warning is-light is-outlined" href="{% url 'share:logout' %}">Logout</a>
 
                      {% endif %}
