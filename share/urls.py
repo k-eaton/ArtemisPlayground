@@ -21,4 +21,8 @@ urlpatterns = [
     path('script/<int:script_id>/show_my_script', views.show_my_script, name='show_my_script'),
     path('problem/<int:problem_id>/show_problem', views.show_problem, name='show_problem'),
     path('script/<int:script_id>/show_script', views.show_script, name='show_script'),
+
+    # s3Integration
+    path('show_media', views.show_media, name='show_media'),
+
 ]
