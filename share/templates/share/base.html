@@ -72,7 +72,7 @@
                       <a class="button is-warning is-light is-outlined" href="{% url 'share:login' %}">Login</a>
 
                      {% else   %}
-                     <a class="navbar-item" href="{% url 'share:make_post_form' %}"> Make a Post </a>
+                     <a class="navbar-item" href="{% url 'share:publish_post' %}"> Make a Post </a>
                      <a class="navbar-item" href="{% url 'share:edit_profile' user.id %}">Edit Profile</a>
                      <a class="navbar-item" href="{% url 'share:logout' %}">Logout {{user.username}}</a>
 

@@ -80,9 +80,10 @@ def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
             user = request.user
-            all_problems = Problem.objects.all()   # all_problems is a list object [   ]
+            all_posts = Post.objects.all()   # all_problems is a list object [   ]
 
-            return render(request, "share/index.html", {"user":user, "all_problems": all_problems})
+            return render(request, "share/index.html")
+            # return render(request, "share/index.html", {"user":user, "all_posts": all_posts})
         else:
             return redirect("share:login")
     else:
@@ -157,13 +158,13 @@ def delete_profile(request, user_id):
         return HttpResponse(status=500)
 
 #iserrano4
-def make_post(request):
+def publish_post(request):
     if request.method == "GET":
         user = request.user
         if not user.is_authenticated:
             return redirect("share:login", {"user":user, "error":"Please Login"})
         else:
-            return render(request, "share/make_post_form.html", {"user":user})
+            return render(request, "share/publish_post_form.html", {"user":user})
 
 #iserrano4
 def create_post(request):
@@ -174,12 +175,37 @@ def create_post(request):
 
         user = user.id
         #give an option to upload media
-        # if media_upload == 'on':
+        media_upload=request.FILES['Media']
+        print(media_upload.name)
+        print(media_upload.size)
+
+        if video == 'on':
+            video=True
+        else:
+            video=False
 
         post_title = request.POST["Title"]
         post_body = request.POST["Description"]
 
-        # if not post_title and not post_body and not
+        if not post_title and not post_body:
+            return render(request, "share/publish_post_form.html", {"error":"Please fill in at least one field"})
+
+        try:
+            post = Post.objects.create(user=user, post_title=post_title, post_body=post_body)
+            post.save()
+
+            post = get_object_or_404(Post, pk=post.id)
+
+            return render(request, "share/post.html", {"user":user, "problem":problem})
+
+        except:
+            return render(request, "share/publish_post_form.html", {"error":"Unable to publish post at this time"})
+
+    else:
+        user=request.user
+        all_posts = Post.objects.all()
+        return render(request, "share/index.html", {"user":user, "error":"Unable to create a post at this time"})
+        # return render(request, "share/index.html", {"user":user, "all_posts":all_posts, "error":"Unable to create a post at this time"})
 
 #useless code
 #iserrano2

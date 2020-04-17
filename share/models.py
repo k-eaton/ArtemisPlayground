@@ -65,6 +65,7 @@ class Media(models.Model):
 
     file_name = models.CharField(max_length=200, null=False, blank=False, unique=True)
     video = models.BooleanField(default=False)
+    thumb_nail = models.ImageField(default="default.png", blank=True)
 
 #iserrano4 - create Post Model
 #REMEMBER TO DO THEM ONE AT A TIME
