@@ -1,5 +1,8 @@
 from django.urls import path, include
 from . import views  #import everything from views module
+#iserrano4
+from django.conf.urls.static import static
+from django.conf import settings
 
 #iserrano0
 app_name = 'share'
@@ -27,3 +30,5 @@ urlpatterns = [
     path('user/<int:user_id>/delete_profile', views.delete_profile, name='delete_profile'),
 
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

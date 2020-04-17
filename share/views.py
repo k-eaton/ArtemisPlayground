@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404 #iserrano4
 #iserrano4 - import new models created
 #REMEMBER TO DO THEM ONE AT A TIME
-# from .models import Media, Post, Comment
+from .models import Media, Post, Comment
 
 # Create your views here.
 #iserrano2
@@ -105,10 +105,10 @@ def edit_profile(request, user_id):
     if request.method == "GET":
         user = request.user
         if not user.is_authenticated:
-            return redirect("share:login")
+            return redirect("share:login", {"user":user, "error":"Please Login"})
 
         #button is pressed, retrieve user information
-        user_info = get_object_or_404(User, pk=user.id)
+        user_info = get_object_or_404(User, pk=user_id)
 
         #make sure the logged in user is the correct one
         if user_info.id == user.id:
@@ -117,8 +117,8 @@ def edit_profile(request, user_id):
             return render(request, "share/index.html",
             {"Error": "Please login to edit profile"})
 
-
-def update_profile(request):
+#iserrano4
+def update_profile(request, user_id):
     if request.method == "POST":
         user = request.user
         if not user.is_authenticated:
@@ -138,7 +138,8 @@ def update_profile(request):
             password = request.POST['Password']
             bio = request.POST['Bio']
 
-def delete_profile(request):
+#iserrano4
+def delete_profile(request, user_id):
     if request.method == "POST":
         user = request.user
         if not user.is_authenticated:
@@ -155,6 +156,30 @@ def delete_profile(request):
     else:
         return HttpResponse(status=500)
 
+#iserrano4
+def make_post(request):
+    if request.method == "GET":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+        else:
+            return render(request, "share/make_post_form.html", {"user":user})
+
+#iserrano4
+def create_post(request):
+    if request.method == "POST":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+
+        user = user.id
+        #give an option to upload media
+        # if media_upload == 'on':
+
+        post_title = request.POST["Title"]
+        post_body = request.POST["Description"]
+
+        # if not post_title and not post_body and not
 
 #useless code
 #iserrano2
