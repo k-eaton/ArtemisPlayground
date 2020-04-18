@@ -58,7 +58,7 @@ class Script(models.Model):
 #REMEMBER TO DO THEM ONE AT A TIME
 class Media(models.Model):
     def __str__(self):
-        return self.title
+        return self.file_name
 
     #FK
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -71,7 +71,7 @@ class Media(models.Model):
 #REMEMBER TO DO THEM ONE AT A TIME
 class Post(models.Model):
     def __str__(self):
-        return self.title
+        return self.post_header
 
     #FK
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -92,7 +92,7 @@ class Post(models.Model):
 #REMEMBER TO DO THEM ONE AT A TIME
 class Comment(models.Model):
     def __str__(self):
-        return self.title
+        return self.comment_body
 
     #FK
     user = models.ForeignKey(User, on_delete=models.CASCADE)

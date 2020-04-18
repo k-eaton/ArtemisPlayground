@@ -4,25 +4,30 @@
     <div class="publish-form columns">
 
         <div class="column" >
-            <h4 class="title is-5">Create a Post:</h4>
+            <h4 class="title is-3">Create a Post:</h4>
              {% if error %}
                     <h3 style="color: red">{{ error }}</h3>
                 {% endif %}
             <form action="{% url 'share:create_post' %}" method="post">
             {% csrf_token %}
 
-                <!-- media_upload -->
+            <div class="field">
+              <div class="control">
+                <label class="label">Media Upload</label>
                 <form method="post" enctype="/media/">
                   {% csrf_token %}
                   <input type="file" name="Media">
                   <button type="submit">Upload</button>
                 </form>
-
+                <br>
                 <label class="checkbox">
                   <br>Is this a video upload?
                       <input type="checkbox"  id="video" name="video" />
                 </label>
-
+                <br>
+              </div>
+            </div>
+            <br><br>
                 <div class="field">
                   <div class="control">
                     <label class="label">Title</label>

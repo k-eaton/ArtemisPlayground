@@ -30,6 +30,9 @@ urlpatterns = [
     path('user/<int:user_id>/delete_profile', views.delete_profile, name='delete_profile'),
     path('post/publish', views.publish_post, name='publish_post'),
     path('post/create', views.create_post, name="create_post"),
+    path('post/<int:post_id>/edit_post', views.edit_post, name="edit_post"),
+    path('post/<int:post_id>/update_post', views.update_post, name="update_post"),
+    path('post/<int:post_id>/delete_post', views.delete_post, name="delete_post"),
 
 ]
 

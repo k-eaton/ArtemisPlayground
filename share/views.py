@@ -101,6 +101,9 @@ def dashboard(request):
 
             return render(request, "share/dashboard.html", {"my_scripts": my_scripts, "my_problems": my_problems })
 
+def user_profile(request):
+    pass
+
 #iserrano4
 def edit_profile(request, user_id):
     if request.method == "GET":
@@ -115,7 +118,7 @@ def edit_profile(request, user_id):
         if user_info.id == user.id:
             return render(request, "share/edit_profile.html", {"user_info":user_info})
         else:
-            return render(request, "share/index.html",
+            return render(request, "share/login.html",
             {"Error": "Please login to edit profile"})
 
 #iserrano4
@@ -139,6 +142,11 @@ def update_profile(request, user_id):
             password = request.POST['Password']
             bio = request.POST['Bio']
 
+        if user_info.user.id == user.id:
+            User.objects.filter(pk=user_id).update(first_name=first_name, last_name=last_name, username=username, email=email, password=password, bio=bio)
+        else:
+            return render(request, "share/edit_profile.html", {"error":"Unable to update profile"})
+
 #iserrano4
 def delete_profile(request, user_id):
     if request.method == "POST":
@@ -158,6 +166,20 @@ def delete_profile(request, user_id):
         return HttpResponse(status=500)
 
 #iserrano4
+def show_post(request, post_id):
+    if request.method == "GET":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+        else:
+            post = get_object_or_404(Post, pk=post_id)
+
+            comments = Comment.objects.filter(post=post_id)
+            user_comment = Comment.objects.filter(user=user.id).filter(post=post.id)
+
+        return render(request, "share/post.html", {"user":user, "post":post})
+
+#iserrano4
 def publish_post(request):
     if request.method == "GET":
         user = request.user
@@ -174,7 +196,6 @@ def create_post(request):
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
         user = user.id
-        #give an option to upload media
         media_upload=request.FILES['Media']
         print(media_upload.name)
         print(media_upload.size)
@@ -187,16 +208,16 @@ def create_post(request):
         post_title = request.POST["Title"]
         post_body = request.POST["Description"]
 
-        if not post_title and not post_body:
+        if not post_title and not post_body and not media_upload:
             return render(request, "share/publish_post_form.html", {"error":"Please fill in at least one field"})
 
         try:
-            post = Post.objects.create(user=user, post_title=post_title, post_body=post_body)
+            post = Post.objects.create(user=user, post_title=post_title, post_body=post_body, media_upload=media_upload)
             post.save()
 
-            post = get_object_or_404(Post, pk=post.id)
+            post = get_object_or_404(Post, pk=post_id)
 
-            return render(request, "share/post.html", {"user":user, "problem":problem})
+            return render(request, "share/dashboard.html", {"user":user, "post":post})
 
         except:
             return render(request, "share/publish_post_form.html", {"error":"Unable to publish post at this time"})
@@ -206,6 +227,71 @@ def create_post(request):
         all_posts = Post.objects.all()
         return render(request, "share/index.html", {"user":user, "error":"Unable to create a post at this time"})
         # return render(request, "share/index.html", {"user":user, "all_posts":all_posts, "error":"Unable to create a post at this time"})
+
+#iserrano4
+def edit_post(request, post_id):
+    if request.method == "GET":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+
+        post = get_object_or_404(Post, pk=post_id)
+
+        if post.user.id == user.id:
+            return render(request, "share/edit_post.html", {"post":post})
+        else:
+            return render(request, "share/dashboard.html", {"error": "Non-authorized user;Unable to edit post"})
+
+#iserrano4
+def update_post(request, post_id):
+    if request.method == "POST":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+
+        post = get_object_or_404(Post, pk=post_id)
+
+        if not request.POST["Title"] and not request.POST["Description"] and not request.POST["Media"]:
+            return render(request, "share/edit_post.html", {"error":"Please fill in at least one field"})
+        else:
+            media_upload=request.FILES['Media']
+            print(media_upload.name)
+            print(media_upload.size)
+
+            if video == 'on':
+                video=True
+            else:
+                video=False
+
+            post_title = request.POST["Title"]
+            post_body = request.POST["Description"]
+
+        if post.user.id == user.id:
+            Post.object.filter(pk=post_id).update(post_title=post_title, post_body=post_body, media_upload=media_upload)
+        else:
+            return render(request, "share/edit_post.html", {"error":"Unable to update post"})
+
+#iserrano4
+def delete_post(request, post_id):
+    if request.method == "POST":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+
+        post = get_object_or_404(Post, pk=post_id)
+
+        if post.user.id == user.id:
+            Post.object.get(pk=post_id).delete()
+            return render(request, "share/user_profile.html")
+        else:
+            return render(request, "share/dashboard.html", {"error": "Non-authorized user; Unable to delete post"})
+
+#iserrano4
+def create_comment(request):
+    pass
+
+
+
 
 #useless code
 #iserrano2
