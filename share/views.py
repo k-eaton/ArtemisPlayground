@@ -9,7 +9,11 @@ from .models import Script, Problem, Coder
 from django.contrib.auth.models import User
 # s3Integration
 import os, json, boto3
-
+from .forms import *
+from django.conf import settings
+# from django.core.files.storage import FileSystemStorage
+from django.template import RequestContext, Template
+from custom_storages import MediaStorage
 
 
 
@@ -124,15 +128,36 @@ def show_script(request, script_id):
     pass
 
 # s3Integration
-def show_media(request):
-    s3 = boto3.resource('s3',region_name='us-east-2')
-    bucket = s3.Bucket('artemisplayground')
-    object = bucket.Object('diablo.jpg')
-    object.download_file('diablo.jpg')
-    # with open('FILE_NAME', 'wb') as f:
-    #     s3.download_fileobj('artemisplayground', 'diablo.jpg', f)
-    # f = s3.download_file('artemisplayground', 'diablo.jpg', 'diablo.jpg')
-    # for bucket in s3.buckets.all():
-    #     print(bucket.name)
-    # s3.download_file('artemisplayground', 'diablo.jpg', 'diablo.jpg')
-    return diablo.jpg
+def upload(request):
+    if request.method == "POST" and request.FILES['myphoto']:
+        title = request.POST['title']
+        myphoto = request.FILES['myphoto']
+        user = request.user
+
+        # organize a path for the file in bucket
+        file_directory_within_bucket = 'user_upload_files/user_{user_id}'.format(user_id=request.user.id)
+
+        # synthesize a full file path; note that we included the filename
+        file_path_within_bucket = os.path.join(
+            file_directory_within_bucket,
+            myphoto.name
+        )
+
+        #save file to DB
+        photo = Photo.objects.create(user = user, title = title, photo = myphoto) #.save()
+
+        # save file to AWS
+        media_storage = MediaStorage()
+        # filename = media_storage.save(file_path_within_bucket, myphoto)
+
+
+
+        uploaded_file_url = photo.photo
+        photo.save()
+
+        # uploaded_file_url = media_storage.url(filename)
+        return render(request, 'share/upload.html', {
+            'uploaded_file_url': uploaded_file_url
+        })
+
+    return render(request, 'share/upload.html')

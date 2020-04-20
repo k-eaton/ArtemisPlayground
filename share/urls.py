@@ -1,5 +1,7 @@
 from django.urls import path, include
 from . import views  #import everything from views module
+from django.conf import settings
+from django.conf.urls.static import static
 
 #iserrano0
 app_name = 'share'
@@ -23,6 +25,8 @@ urlpatterns = [
     path('script/<int:script_id>/show_script', views.show_script, name='show_script'),
 
     # s3Integration
-    path('show_media', views.show_media, name='show_media'),
+    # path('show_media', views.show_media, name='show_media'),
+    path('upload', views.upload, name='upload'), 
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

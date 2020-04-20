@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+import uuid
 
 # Create your models here.
 #iserrano1 - create Coder model
@@ -48,3 +49,20 @@ class Script(models.Model):
 
     created = models.DateField(auto_now=True)
     updated = models.DateField(auto_now=True)
+
+#s3Integration
+
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    # current_user = instance.user.user
+    return 'user_upload/user_{0}/{1}'.format(instance.user.id, filename)
+
+class Photo(models.Model):
+    def __str__(self):
+        return self.title
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created = models.DateTimeField(auto_now_add=True) 
+    title = models.CharField(max_length=100)
+    photo = models.FileField(upload_to=user_directory_path)
