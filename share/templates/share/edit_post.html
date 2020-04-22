@@ -1,0 +1,64 @@
+{% extends "share/base.html" %}
+{% block content %}
+
+
+<div class="column" >
+  <h4 class="title is-5"> Update Post</h4>
+  {% if error %}
+         <h3 style="color: red">{{ error }}</h3>
+     {% endif %}
+  <form action="{% url 'share:update_post' post.id %}" method="post">
+    {% csrf_token %}
+
+    <div class="field">
+      <div class="control">
+        <label class="label">Media Upload</label>
+        <form method="post" enctype="/media/">
+          {% csrf_token %}
+          <input type="file" name="Media">
+          <button type="submit">Upload</button>
+        </form>
+        <br><br>
+        <label class="checkbox">
+          <br>Is this a video upload?
+              <input type="checkbox"  id="video" name="video" />
+        </label>
+    </div>
+  </div>
+
+    <div class="field">
+      <div class="control">
+        <label class="label">Title</label>
+        <input class="input is-primary" value="{{ post.title }}" type="text" name="title">
+      </div>
+    </div>
+
+    <div class="field">
+          <div class="control">
+            <label class="label">Description</label>
+            <textarea class="input is-primary" name="description" namerows="4" cols="50" >{{problem.description }}
+            </textarea>
+          </div>
+    </div>
+
+
+    <br><br><br>
+
+    <div class="field">
+        <div class="control">
+          <button class="button is-success is-outlined is-fullwidth" type="submit" value="Update">Update</button>&nbsp;
+        </div>
+    </div>
+
+    </form>
+
+    <h3 class="title is-5">Delete Post {{ post.title }}</h3>
+    <form action="{% url 'share:delete_post' post.id %}" method="post">
+        {% csrf_token %}
+         <button class="button is-danger is-outlined is-fullwidth" type="submit" name="delete" value="Delete">Delete</button>&nbsp;
+    </form>
+
+</div>
+
+
+{% endblock content %}

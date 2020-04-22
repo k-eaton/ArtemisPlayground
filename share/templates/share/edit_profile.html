@@ -1,0 +1,71 @@
+{% extends "share/base.html" %}
+{% block content %}
+
+<div class="columns">
+  <div class = "column">
+
+    <h4 class = "title is-5"> Profile Settings </h4>
+
+    <form action="{% url 'share:update_profile' user.id %}" method = "post">
+
+
+      <!-- try and figure out icon shit -->
+
+      <div class = "field">
+        <div class="control">
+          <label class="label">First Name</label>
+          <input class="input is-warning" placeholder="First Name" type="First Name" name="first name">
+        </div>
+      </div>
+
+      <div class = "field">
+        <div class="control">
+          <label class="label">Last Name</label>
+          <input class="input is-warning" placeholder="Last Name" type="Last Name" name="last name">
+        </div>
+      </div>
+
+      <div class = "field">
+        <div class="control">
+          <label class="label">Username Name</label>
+          <input class="input is-warning" value="{{user.username}}" type="text" name="title">
+        </div>
+      </div>
+
+      <div class = "field">
+        <div class="control">
+          <label class="label">Email</label>
+          <input class="input is-warning" value="{{user.email}}" type="text" name="title">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <label class="label">Password</label>
+          <input class="input is-warning" value="{{user.password}}" type="text" name="title">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <label class="label">Bio</label>
+          <textarea class="input is warning" name="bio" namerows="4" cols="50">What's your story?</textarea>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <button class="button is-success is-outlined is-fullwidth" type="submit" value="Update">Update</button>&nbsp;
+        </div>
+      </div>
+
+      <h3 class="title is-5">Delete Profile{{ user.id }}</h3>
+        <form action="{% url 'share:delete_profile' user.id %}" method="post">
+          {% csrf_token %}
+            <button class="button is-danger is-outlined is-fullwidth" type="submit" name="delete" value="Delete">Delete</button>&nbsp;
+        </form>
+
+  </div>
+</div>
+
+{% endblock content %}
