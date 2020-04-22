@@ -144,13 +144,10 @@ def upload(request):
         )
 
         #save file to DB
-        photo = Photo.objects.create(user = user, title = title, photo = myphoto) #.save()
+        photo = Photo.objects.create(user = user, title = title, photo = myphoto)
 
         # save file to AWS
         media_storage = MediaStorage()
-        # filename = media_storage.save(file_path_within_bucket, myphoto)
-
-
 
         uploaded_file_url = photo.photo
         photo.save()
