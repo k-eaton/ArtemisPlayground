@@ -62,8 +62,6 @@ def user_directory_path(instance, filename):
     return 'user_upload/user_{0}/{1}'.format(instance.user.id, filename)
 
 class Photo(models.Model):
-    def __str__(self):
-        return self.title
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)

@@ -2,7 +2,7 @@ db.sqlite3
 __pycache__/
 *.pyc
 herokuCommands.txt
-ArtemisPlayground/__pycache__
+/ArtemisPlayground/__pycache__/
 herokuCommands.txt
 *.png
 *.jpg

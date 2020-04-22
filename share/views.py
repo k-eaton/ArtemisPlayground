@@ -208,7 +208,7 @@ def create_post(request):
         if not user.is_authenticated:
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
-        user = user.id
+        # user_id = user.id
         # media_upload=request.FILES['Media']
         # print(media_upload.name)
         # print(media_upload.size)
@@ -227,10 +227,10 @@ def create_post(request):
         the_photo = request.FILES.get("myphoto")
 
         # create Photo object
-        photo = Photo.objects.create(user = user, photo = the_photo).save()
+        photo = Photo.objects.create(user = user, photo = the_photo)
 
         # get photo id
-        photo_id = photo.pk
+        # photo_id = photo.pk
 
         # if not post_title and not post_body and not media_upload:
         if not post_title and not post_body and not photo:
@@ -238,12 +238,15 @@ def create_post(request):
 
         try:
             # post = Post.objects.create(user=user, post_title=post_title, post_body=post_body, media_upload=media_upload, photo=photo_id)
-            post = Post.objects.create(user=user, post_header=post_title, post_body=post_body, photo=photo_id)
+            post = Post.objects.create(user=user, post_header=post_title, post_body=post_body, photo=photo)
+            photo.save()
             post.save()
 
-            post = get_object_or_404(Post, pk=post_id)
+            # post = get_object_or_404(Post, pk=post_id)
 
-            return render(request, "share/dashboard.html", {"user":user, "post":post})
+            # return render(request, "share/dashboard.html", {"user":user, "post":post})
+            return render(request, "share/dashboard.html")
+
 
         except:
             return render(request, "share/publish_post_form.html", {"error":"Unable to publish post at this time"})
