@@ -1,15 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-<<<<<<< HEAD
 import uuid
-=======
 from django.db.models.fields import DateTimeField
 #attempt hashtags later:
 #https://stream-blog.netlify.app/build-a-scalable-twitter-clone-with-django-and-stream/#hashtags-feeds
 # from django.template.defaultfilters import slugify
-
->>>>>>> ecaa37efc9e68ea87332cd2b2fe3d91168ddf2d4
 
 # Create your models here.
 #iserrano1 - create Coder model
@@ -72,7 +68,7 @@ class Photo(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     created = models.DateTimeField(auto_now_add=True) 
-    title = models.CharField(max_length=100)
+    # title = models.CharField(max_length=100)
     photo = models.FileField(upload_to=user_directory_path)
 
 #iserrano4 - create Media Model
@@ -97,6 +93,7 @@ class Post(models.Model):
     #FK
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     media = models.ForeignKey(Media, on_delete=models.CASCADE, blank=True, null=True)
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, null=True)
 
     post_header = models.CharField(max_length=50, blank=True, unique=False)
     post_body = models.TextField(max_length=500, blank=True, unique=False)

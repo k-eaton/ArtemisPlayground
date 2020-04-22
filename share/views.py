@@ -23,16 +23,16 @@ from custom_storages import MediaStorage
 
 
 # Create your views here.
+
 #iserrano3
 def index(request):
     if request.method == "GET":
-
-
         if request.user.is_authenticated:
             user = request.user
-            all_problems = Problem.objects.all()   # all_problems is a list object [   ]
+            all_posts = Post.objects.all()   # all_problems is a list object [   ]
 
-            return render(request, "share/index.html", {"user":user, "all_problems": all_problems})
+            return render(request, "share/index.html")
+            # return render(request, "share/index.html", {"user":user, "all_posts": all_posts})
         else:
             return redirect("share:login")
     else:
@@ -47,10 +47,10 @@ def signup(request):
 #iserrano2
 def create(request):
     if request.method == "POST":
-        username = request.POST['Username']
-        email = request.POST['Email']
-        password = request.POST['Password']
-        coder_yet = request.POST.get('coder_yet_checkbox')
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        # coder_yet = request.POST.get('coder_yet_checkbox')
 
         if username is not None and email is not None and password is not None: # checking that they are not None
             if not username or not email or not password: # checking that they are not empty
@@ -61,7 +61,7 @@ def create(request):
                 return render(request, "share/signup.html", {"error": "Email already exists"})
             # save our new user in the User model
             user = User.objects.create_user(username, email, password)
-            coder = Coder.objects.create(user= user, coder_yet = coder_yet).save()
+            # coder = Coder.objects.create(user= user, coder_yet = coder_yet).save()
             user.save()
 
             login(request, user, backend="django.contrib.auth.backends.ModelBackend")
@@ -100,19 +100,7 @@ def logout_view(request):
     logout(request)
     return redirect("share:login")
 
-#iserrano3
-def index(request):
-    if request.method == "GET":
-        if request.user.is_authenticated:
-            user = request.user
-            all_posts = Post.objects.all()   # all_problems is a list object [   ]
 
-            return render(request, "share/index.html")
-            # return render(request, "share/index.html", {"user":user, "all_posts": all_posts})
-        else:
-            return redirect("share:login")
-    else:
-        return HttpResponse(status=500)
 
 #iserrano3
 def dashboard(request):
@@ -221,23 +209,36 @@ def create_post(request):
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
         user = user.id
-        media_upload=request.FILES['Media']
-        print(media_upload.name)
-        print(media_upload.size)
+        # media_upload=request.FILES['Media']
+        # print(media_upload.name)
+        # print(media_upload.size)
 
-        if video == 'on':
-            video=True
-        else:
-            video=False
+        # if video == 'on':
+        #     video=True
+        # else:
+        #     video=False
 
-        post_title = request.POST["Title"]
-        post_body = request.POST["Description"]
+        # post_title = request.POST["title"]
+        # post_body = request.POST["description"]
+        # the_photo = request.FILES["myphoto"]
 
-        if not post_title and not post_body and not media_upload:
+        post_title = request.POST.get("title")
+        post_body = request.POST.get("description")
+        the_photo = request.FILES.get("myphoto")
+
+        # create Photo object
+        photo = Photo.objects.create(user = user, photo = the_photo).save()
+
+        # get photo id
+        photo_id = photo.pk
+
+        # if not post_title and not post_body and not media_upload:
+        if not post_title and not post_body and not photo:
             return render(request, "share/publish_post_form.html", {"error":"Please fill in at least one field"})
 
         try:
-            post = Post.objects.create(user=user, post_title=post_title, post_body=post_body, media_upload=media_upload)
+            # post = Post.objects.create(user=user, post_title=post_title, post_body=post_body, media_upload=media_upload, photo=photo_id)
+            post = Post.objects.create(user=user, post_header=post_title, post_body=post_body, photo=photo_id)
             post.save()
 
             post = get_object_or_404(Post, pk=post_id)
@@ -318,31 +319,26 @@ def create_comment(request):
 # s3Integration
 def upload(request):
     if request.method == "POST" and request.FILES['myphoto']:
-        title = request.POST['title']
+        # title = request.POST['title']
         myphoto = request.FILES['myphoto']
         user = request.user
 
-        # organize a path for the file in bucket
-        file_directory_within_bucket = 'user_upload_files/user_{user_id}'.format(user_id=request.user.id)
-
-        # synthesize a full file path; note that we included the filename
-        file_path_within_bucket = os.path.join(
-            file_directory_within_bucket,
-            myphoto.name
-        )
-
-        #save file to DB
-        photo = Photo.objects.create(user = user, title = title, photo = myphoto)
+        photo = Photo.objects.create(user = user, photo = myphoto)
 
         # save file to AWS
-        media_storage = MediaStorage()
+        # media_storage = MediaStorage()
 
         uploaded_file_url = photo.photo
+
+        #save file to DB
         photo.save()
+
+        photo_id = photo.pk
 
         # uploaded_file_url = media_storage.url(filename)
         return render(request, 'share/upload.html', {
-            'uploaded_file_url': uploaded_file_url
+            'uploaded_file_url': uploaded_file_url,
+            'photo_id': photo_id
         })
 
     return render(request, 'share/upload.html')

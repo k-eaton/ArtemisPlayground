@@ -8,17 +8,18 @@
              {% if error %}
                     <h3 style="color: red">{{ error }}</h3>
                 {% endif %}
-            <form action="{% url 'share:create_post' %}" method="post">
+            <form action="{% url 'share:create_post' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div class="field">
               <div class="control">
                 <label class="label">Media Upload</label>
-                <form method="post" enctype="/media/">
-                  {% csrf_token %}
-                  <input type="file" name="Media">
-                  <button type="submit">Upload</button>
-                </form>
+                <!-- <form method="post" enctype="/media/"> -->
+                  <!-- {% csrf_token %} -->
+                  <input type="file" id="myphoto" name="myphoto">
+                  <!-- <input type="file" name="Media"> -->
+                  <!-- <button type="submit">Upload</button> -->
+                <!-- </form> -->
                 <br>
                 <label class="checkbox">
                   <br>Is this a video upload?
@@ -38,8 +39,7 @@
                 <div class="field">
                       <div class="control">
                         <label class="label">Description</label>
-                        <textarea class="input is-warning" name="description" namerows="4" cols="50" >
-                        </textarea>
+                        <textarea class="input is-warning" name="description" namerows="4" cols="50" ></textarea>
                       </div>
                 </div>
 
