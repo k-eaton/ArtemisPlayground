@@ -1,0 +1,125 @@
+<!-- list problems and scripts that belong to this coder -->
+{% extends "share/base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\bulma-0.8.0\css\bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.0.6/css/all.css"></script>
+<link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css">
+
+<style>
+
+</style>
+<body>
+  <section class="index">
+    <div class="container">
+      <div class="columns">
+
+        <!-- beginning of chat section -->
+        <div class="column1">
+          <!--  <p> this is a test, should be on the right</p> -->
+
+          <!-- insert buttons: Group-Finder & Chat -->
+          <div class="buttons">
+            <ul>
+              <li>
+                <!-- Group Finder Button -->
+                <button class="button is-medium is-warning is-light is-outlined">
+                   <span class="is-outlined">
+                     <i class="fab fa-Group Finder"></i>
+                   </span>
+                   <span>Group Finder</span>
+                 </button>
+              </li>
+              <li>
+                 <!-- Chat Button -->
+                <button class="button is-medium is-warning is-light is-outlined">
+                  <span>Chat</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+        <!-- end chat section -->
+
+        <!-- beginning of main feed section -->
+        <div class="column2">
+          <div class="notification is-warning">
+            <div class = "content">
+              <figure class="image is-square">
+                <img scr= "{% static 'post.media' }" <br><br>
+              </figure>
+              <br>
+              <article class="media notification is-warning">
+                <!-- user icon section -->
+                <figure class="media-left">
+                  <span class="image is-64x64">
+                    <img src="insert link to user icon">
+                  </span>
+                </figure>
+
+                <!-- post header and body -->
+                <div class="media-content">
+                  <div class = "content">
+                    <a>
+                      <strong>{{ user.username }}</strong>
+                      <br>
+                      <h1 class="title is-size-4">{{ post.post_title }}</h1>
+                    </a>
+                    <p class="subtitle is-size-6">{{ post.post_body }}</p>
+                  </div>
+
+                <!-- comment button, repost, like -->
+                <nav class="level is-mobile">
+                  <div class="level-left">
+                    <a class="level-item">
+                      <span class="icon is-small"><i class="fas fa-comment"></i></span>
+                    </a>
+                    <a>
+                      <span class="icon is-small"><i class="fas fa-retweet"></i></span>
+                    </a>
+                    <a>
+                      <span class="icon is-small"><i class="fas fa-heart"></i></span>
+                    </a>
+                  </div>
+                </nav>
+              </div>
+
+              <!-- delete post -->
+              <!-- make this conditional
+              <div class="media-right">
+                <form action="{% url 'share:delete_post' post.id %}" method="post">
+                  {% csrf_token %}
+                    <button class="delete" value="Delete"></button>
+                </form>
+              </div>
+              -->
+              </article>
+            </div>
+          </div>
+        </div>
+        <!-- end main feed section -->
+
+        <!-- beginning trending section -->
+        <div class="column3">
+          <h2 class="title is-4">Leave a comment </h2>
+            <form action="{% url 'share:create_comment' post.id %}" method="post">
+            {% csrf_token %}
+              <div class="field"> <div class="control"> <textarea class="textarea is-warning" name="feedback"
+                  placeholder="Write a comment ..."></textarea></div>
+              </div>
+
+              <div class="field"> <div class="control"> <button class="button is-success is-outlined" type="submit">
+                                                        Post Comment </button>&nbsp; </div>
+              </div>
+
+            </form>
+        <!-- end trending section -->
+
+      </div>
+    </div>
+  </section>
+</body>
+
+
+{% endblock content %}

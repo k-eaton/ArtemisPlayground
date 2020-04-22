@@ -24,9 +24,18 @@ urlpatterns = [
     path('problem/<int:problem_id>/show_problem', views.show_problem, name='show_problem'),
     path('script/<int:script_id>/show_script', views.show_script, name='show_script'),
 
+    #iserrano4
+    path('user/<int:user_id>/edit_profile', views.edit_profile, name='edit_profile'),
+    path('user/<int:user_id>/update_profile', views.update_profile, name='update_profile'),
+    path('user/<int:user_id>/delete_profile', views.delete_profile, name='delete_profile'),
+    path('post/publish', views.publish_post, name='publish_post'),
+    path('post/create', views.create_post, name="create_post"),
+    path('post/<int:post_id>/edit_post', views.edit_post, name="edit_post"),
+    path('post/<int:post_id>/update_post', views.update_post, name="update_post"),
+    path('post/<int:post_id>/delete_post', views.delete_post, name="delete_post"),
+
     # s3Integration
     # path('show_media', views.show_media, name='show_media'),
     path('upload', views.upload, name='upload'), 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
