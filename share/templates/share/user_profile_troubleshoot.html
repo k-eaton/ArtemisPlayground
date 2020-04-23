@@ -31,8 +31,10 @@
             <div class='content'>
 
               <figure class="image is-square">
-                <a href="{% url 'share:show_post' p.id %}">
+                <a href="{% url 'share:post' p.id %}">
+                  {% load media %}
                   <img src="{{ p.photo }}">
+                  <img src="{% media p.photo %}">
                 </a>
               </figure>
 
@@ -48,7 +50,7 @@
                 <div class="media">
                   <div class = "content">
                     <!-- <h1 class="title is-size-4">{{ p.user.username }}</h1> -->
-                    <a href="{% url 'share:show_post' p.id %}">
+                    <a href="{% url 'share:post' p.id %}">
                       <h1>{{ p.post_header }}</h1>
                     </a>
                     <p class="subtitle is-size-6">{{ p.post_body }}</p>

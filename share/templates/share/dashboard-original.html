@@ -48,11 +48,8 @@
 
         <!-- beginning of main feed section -->
         <div class="column2">
-          {% if error %}
-            <h3 class="title is-3" style="color: red">{{ error }}</h3>
-          {% endif %}
           <!-- <p> this is a test, should be in the middle </p> -->
-          {% for p in timeline_posts %}
+
           <div class="notification is-warning">
             <figure class="image is-square">
               <img src="static\share\images\Hollow_Knight.png" alt="Hollow_Knight">
@@ -75,8 +72,9 @@
                 </div>
               </div>
             </article>
+
           </div>
-          {% endfor %}
+
         </div>
         <!-- end main feed section -->
 
@@ -86,7 +84,7 @@
           <!-- the idea hear is to show an image that is trending/has the highest amount of reblogs/likes/upvotes etc...-->
           <figure class="image is-primary is-256x256">
             <img src="static\share\images\diablo.jpeg" alt="diablo">
-
+            
             <br>
             <h2 style="color:#996633"; class="title is-4"> Diablo 3 Fan Art </h2>
             <div class="tags are-normal">

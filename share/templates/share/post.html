@@ -44,12 +44,17 @@
 
         <!-- beginning of main feed section -->
         <div class="column2">
+
+          {% if error %}
+            <h3 class="title is-3" style="color: red">{{ error }}</h3>
+          {% endif %}
+
           <div class="notification is-warning">
             <div class = "content">
               <figure class="image is-square">
-                <img scr= "{% static 'post.media' }" <br><br>
+                <img scr= "{{ post.photo }}">
               </figure>
-              <br>
+
               <article class="media notification is-warning">
                 <!-- user icon section -->
                 <figure class="media-left">
@@ -61,16 +66,13 @@
                 <!-- post header and body -->
                 <div class="media-content">
                   <div class = "content">
-                    <a>
-                      <strong>{{ user.username }}</strong>
-                      <br>
-                      <h1 class="title is-size-4">{{ post.post_title }}</h1>
-                    </a>
+                    <h1>{{ post.user.username }}</h1>
+                    <h1>{{ post.post_header }}</h1>
                     <p class="subtitle is-size-6">{{ post.post_body }}</p>
                   </div>
 
                 <!-- comment button, repost, like -->
-                <nav class="level is-mobile">
+                <!-- <nav class="level is-mobile">
                   <div class="level-left">
                     <a class="level-item">
                       <span class="icon is-small"><i class="fas fa-comment"></i></span>
@@ -82,19 +84,13 @@
                       <span class="icon is-small"><i class="fas fa-heart"></i></span>
                     </a>
                   </div>
-                </nav>
+                </nav> -->
               </div>
-
-              <!-- delete post -->
-              <!-- make this conditional
-              <div class="media-right">
-                <form action="{% url 'share:delete_post' post.id %}" method="post">
-                  {% csrf_token %}
-                    <button class="delete" value="Delete"></button>
-                </form>
-              </div>
-              -->
               </article>
+              <!-- edit post option -->
+              {% if user.id == post.user.id %}
+                <a class = "button is-warning is-medium" href="{% url 'share:edit_post' post.id %}"> Edit Post </a>
+              {% endif %}
             </div>
           </div>
         </div>

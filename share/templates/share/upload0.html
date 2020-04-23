@@ -1,0 +1,39 @@
+{% extends "share/base.html" %}
+
+{% block content %}
+
+<div class="columns">
+      <div class="column ">
+
+          <nav class="panel">
+            <p class="panel-heading" style="text-align:center">
+            <span><strong>Upload a File Form</strong></span>
+            </p>
+
+
+              <div class="panel-block">
+                <!-- the action of the form goes to create function in views.py -->
+                   <form class="control" action="{% url 'share:upload' %}" method="post" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          
+                          <div class="field">
+                              <input type="file" name="myphoto">
+                          </div>
+                          <div class="field">
+                              <p class="control">
+                                  <button class="button is-danger" type="submit" value="Upload">Upload</button>
+                              </p>
+                          </div>
+                      </form>
+              </div>
+          </nav>
+      </div>
+  </div>
+
+  {% if uploaded_file_url %}
+    <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+    <p>Photo ID: <a href="{{ photo_id }}">{{ photo_id }}</a></p>
+
+  {% endif %}
+
+{% endblock content %}

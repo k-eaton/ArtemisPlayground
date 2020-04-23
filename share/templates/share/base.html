@@ -13,7 +13,7 @@
 <body>
 <nav class="navbar is-warning" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-        <a class="navbar-item" href="{% url 'share:index' %}">
+        <a class="navbar-item" href="{% url 'share:dashboard' %}">
             <img src="{% static 'share/images/bow_06_t.PNG' %}" alt=" icon">
             Artemis's<br>Playground
         </a>
@@ -72,10 +72,20 @@
                       <a class="button is-warning is-light is-outlined" href="{% url 'share:login' %}">Login</a>
 
                      {% else   %}
-                     <a class="navbar-item" href="{% url 'share:publish_post' %}"> Make a Post </a>
-                     <a class="navbar-item" href="{% url 'share:edit_profile' user.id %}">Edit Profile</a>
-                     <a class="navbar-item" href="{% url 'share:logout' %}">Logout {{user.username}}</a>
-
+                     <ul>
+                       <li>
+                         <a class="navbar-item" href="{% url 'share:publish_post' %}"> Make a Post </a>
+                       </li>
+                       <li>
+                         <a class="navbar-item" href="{% url 'share:edit_profile' user.id %}">Edit Profile</a>
+                       </li>
+                       <li>
+                         <a class="navbar-item" href="{% url 'share:user_profile' user.id %}">Testing User Profile</a>
+                       </li>
+                       <li>
+                         <a class="navbar-item" href="{% url 'share:logout' %}">Logout {{user.username}}</a>
+                       </li>
+                      </ul>
                      {% endif %}
 
                    </div>
