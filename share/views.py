@@ -149,17 +149,18 @@ def update_profile(request, user_id):
 
         user_info = get_object_or_404(User, pk=user_id)
 
-        if not request.POST['Username'] or not request.POST['Email'] or not request.POST['Password']:
+        if not request.POST['username'] or not request.POST['email'] or not request.POST['password']:
             return render(request, "share/edit_profile.html", {"user_info":user_info, "Error":"Fill out required fields"})
 
         else:
             #figure out how to get icon change option
-            first_name = request.POST['First Name']
-            last_name = request.POST['Last Name']
-            username = request.POST['Username']
-            email = request.POST['Email']
-            password = request.POST['Password']
-            bio = request.POST['Bio']
+            # user_page_name: request.POST['User_page_name']
+            first_name = request.POST['first Name']
+            last_name = request.POST['last Name']
+            username = request.POST['username']
+            email = request.POST['email']
+            password = request.POST['password']
+
 
         if user_info.user.id == user.id:
             User.objects.filter(pk=user_id).update(first_name=first_name, last_name=last_name, username=username, email=email, password=password, bio=bio)
@@ -251,7 +252,7 @@ def create_post(request):
             # post = get_object_or_404(Post, pk=post_id)
 
             # return render(request, "share/dashboard.html", {"user":user, "post":post})
-            return render(request, "share/dashboard.html")
+            return render(request, "share/dashboard.html", {"error":"Created Post!"})
 
 
         except:
@@ -285,24 +286,32 @@ def update_post(request, post_id):
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
         post = get_object_or_404(Post, pk=post_id)
+        print('Testing')
+        print('post_id:', post_id)
 
-        if not request.POST["Title"] and not request.POST["Description"] and not request.POST["Media"]:
+        if not request.POST["post_header"] and not request.POST["post_body"] and not request.POST["photo"]:
             return render(request, "share/edit_post.html", {"error":"Please fill in at least one field"})
         else:
-            media_upload=request.FILES['Media']
-            print(media_upload.name)
-            print(media_upload.size)
+            photo = request.POST["photo"]
+            print(photo.name)
+            print(photo.size)
 
             if video == 'on':
                 video=True
             else:
                 video=False
 
-            post_title = request.POST["Title"]
-            post_body = request.POST["Description"]
+            post_header = request.POST["post_header"]
+            post_body = request.POST["post_body"]
 
         if post.user.id == user.id:
-            Post.object.filter(pk=post_id).update(post_title=post_title, post_body=post_body, media_upload=media_upload)
+            Post.objects.filter(pk=post_id).update(post_header=post_header, post_body=post_body, media_upload=media_upload)
+            print('******Testing*******')
+            print('photo:', photo_id)
+            print('post_header: ', post_header)
+            print('post_header: ', post_header)
+            print('******Testing*******')
+            return render("share/user_profile.html", {"error":"Post updated"})
         else:
             return render(request, "share/edit_post.html", {"error":"Unable to update post"})
 
@@ -399,3 +408,23 @@ def upload(request):
         })
 
     return render(request, 'share/upload.html')
+
+
+#iserrano6
+def search(request):
+    if request.method == "POST":
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+
+        query = request.POST["query"]
+
+        if not query:
+            return render (request, "share/search_posts.html", {"error":"There's nothing here =("})
+
+        posts = Post.objects.filter(post_header__icontains=query) | Post.objects.filter(post_body__icontains=query)
+
+        return render(request, "share/search_posts.html", {"user":user, "posts":posts})
+
+    else:
+        return HttpResponse(status=500)

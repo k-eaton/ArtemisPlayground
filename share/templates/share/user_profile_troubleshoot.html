@@ -26,6 +26,29 @@
   <!-- beginning of section 2-->
     <div class="column2">
       <hr>
+      <!-- user info -->
+      <div class="notification is-warning is-light">
+        <section class="section is-paddingless-horizontal" style="padding-top:0;">
+          <div class="container">
+            <article class="media center">
+              <figure class="media-left">
+                <figure class="image is-64x64">
+                  <a href="{% url 'share:user_profile' p.user.id%}"><img src=""></a>
+                </figure>
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong>{{ p.user.first_name}} {{ p.user.last_name }}</strong>
+                    <a href="{% url 'share:user_profile' p.user.id%}">{{ p.user.username }}</a><br>
+                    <span class="has-text-grey"><time datetime="{{ p.post_created }}">{{ p.post_created }}</time></span>
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+        <!-- Username info -->
           {% for p in my_posts %}
           <div class="notification is-warning">
             <div class='content'>

@@ -1,0 +1,30 @@
+{% extends "share/base.html" %}
+{% block content %}
+<!-- objects passed by the view function: user, scripts -->
+
+    {% if error %}
+        <h3 style="color: red">{{ error }}</h3>
+    {% endif %}
+
+    <div class="columns">
+        <div class="column">
+            <h1 style="color: #0f81cc" class="title">Search results for {{ query }}</h1>
+            {% for p in posts %}
+                <div class="box">
+                    <div class="content">
+                      {% if not p.post_header and not p.photo %}
+                      Post: Commentary Post <br>By User {{ p.user.username}}
+                      {% elif not p.post_header and not p.post_body %}
+                      Post: Image Post <br>By User {{ p.user.username}}
+                      {% else %}
+                      Post: {{ p.post_header }} <br>By User {{ p.user.username}}
+                      {% endif %}
+                      <a class="button is-warning is-small"
+                      href="{% url 'share:show_post' p.id %}">Show Post</a>
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
