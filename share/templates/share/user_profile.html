@@ -53,30 +53,40 @@
       <!-- for posts with only text-->
       {% if not p.post_header and not p.photo %}
         <div class="content">
+          <a href="{% url 'share:show_post' p.id %}">
             <p>{{ p.post_body }}</p>
+          </a>
         </div>
 
       <!-- for posts with only photos-->
       {% elif not p.post_header and not p.post_body %}
         <div class="content">
             <figure class="image is-square">
-              <img src="{{ p.photo }}">
+              <a href="{% url 'share:show_post' p.id %}">
+                <img src="{{ p.photo }}">
+              </a>
             </figure>
         </div>
 
       <!-- for posts with only headers -->
       {% elif not p.post_body and not p.photo %}
         <div class="content">
+          <a href="{% url 'share:show_post' p.id %}">
             <h1 class="title is-size-3">{{ p.post_header }}</h1>
+          </a>
         </div>
 
       <!--for regular posts -->
       {% else %}
         <div class="content">
             <figure class="image is-square">
-              <img src="{{ p.photo }}">
+              <a href="{% url 'share:show_post' p.id %}">
+                <img src="{{ p.photo }}">
+              </a>
             </figure>
-            <h1 class="title is-size-3">{{ p.post_header }}</h1>
+            <a href="{% url 'share:show_post' p.id %}">
+              <h1 class="title is-size-3">{{ p.post_header }}</h1>
+            </a>
             <p style="font-size:120%;">{{ p.post_body }}</p>
         </div>
 
