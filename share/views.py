@@ -306,6 +306,7 @@ def update_post(request, post_id):
 
         if post.user.id == user.id:
             Post.objects.filter(pk=post_id).update(post_header=post_header, post_body=post_body, media_upload=media_upload)
+            post = get_object_or_404(Post, pk=post_id)
             print('******Testing*******')
             print('photo:', photo_id)
             print('post_header: ', post_header)

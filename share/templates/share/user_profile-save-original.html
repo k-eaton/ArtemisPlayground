@@ -1,0 +1,131 @@
+<!-- list problems and scripts that belong to this coder -->
+{% extends "share/base.html" %}
+{% block content %}
+<!-- user account header -->
+<div class="tile is-ancestor has-text-centered">
+  <div style="margin: auto;" class="tile is-parent">
+    <div class="tile is-child box">
+      <h1 class="title is-2">&nbsp<span style="color:#1496ed">{{ user.username }}</span></h1>
+    </div>
+  </div>
+</div>
+
+<!-- beginning of post line up -->
+<div class="columns">
+  <!-- beginning of section 1 -->
+  <div class="column1">
+    <hr>
+    <h1 class="title is-3">&nbsp<span style="color:#1496ed">Following</span></h1>
+    {% for f in following %}
+
+    {% endfor %}
+  </div>
+  <!-- end section 1 -->
+
+
+  <!-- beginning of section 2-->
+  <div class="column2">
+    <hr>
+    {% for p in my_posts %}
+    <!-- user info -->
+    <div class="notification is-warning is-light">
+      <section class="section is-paddingless-horizontal" style="padding-top:0; padding-bottom:0;">
+        <div class="container">
+          <article class="media center">
+            <figure class="media-left">
+              <figure class="image is-64x64">
+                <a href="{% url 'share:user_profile' p.user.id%}"><img src="user icon"></a>
+              </figure>
+            </figure>
+            <div class="media-content">
+              <div class="content">
+                <p>
+                  <strong>{{ p.user.first_name}} {{ p.user.last_name }}</strong>
+                  <a href="{% url 'share:user_profile' p.user.id%}">{{ p.user.username }}</a><br>
+                  <span class="has-text-grey"><time datetime="{{ p.post_created }}">{{ p.post_created }}</time></span>
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+      <!-- Username info -->
+      <!-- for posts with only text-->
+      {% if not p.post_header and not p.photo %}
+        <div class="content">
+          <a href="{% url 'share:show_post' p.id %}">
+            <p>{{ p.post_body }}</p>
+          </a>
+        </div>
+
+      <!-- for posts with only photos-->
+      {% elif not p.post_header and not p.post_body %}
+        <div class="content">
+            <figure class="image is-square">
+              <a href="{% url 'share:show_post' p.id %}">
+                <img src="{{ p.photo }}">
+              </a>
+            </figure>
+        </div>
+
+      <!-- for posts with only headers -->
+      {% elif not p.post_body and not p.photo %}
+        <div class="content">
+          <a href="{% url 'share:show_post' p.id %}">
+            <h1 class="title is-size-3">{{ p.post_header }}</h1>
+          </a>
+        </div>
+
+      <!--for regular posts -->
+      {% else %}
+        <div class="content">
+            <figure class="image is-square">
+              <a href="{% url 'share:show_post' p.id %}">
+                <img src="{{ p.photo }}">
+              </a>
+            </figure>
+            <a href="{% url 'share:show_post' p.id %}">
+              <h1 class="title is-size-3">{{ p.post_header }}</h1>
+            </a>
+            <p style="font-size:120%;">{{ p.post_body }}</p>
+        </div>
+
+      {% endif %}
+    </div>
+    {% endfor %}
+    <!-- end of section 2 -->
+
+
+    <!-- beginning section 3 -->
+    <div class="column3">
+      <hr>
+      <!-- Follow Button; figure out how to swap follow and unfollow -->
+      <div class="buttons">
+        <ul>
+          <li>
+            <button class="button is-medium is-warning is-light is-outlined">
+              <span class="is-outlined">
+                <i class="fab fa-Follow Me"></i>
+              </span>
+              <span>Follow Me!</span>
+            </button>
+          </li>
+
+          <li>
+            <button class="button is-medium is-warning is-light is-outlined">
+              <span class="is-outlined">
+                <i class="fab fa-Message Me"></i>
+              </span>
+              <span>Message Me!</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+      <!-- Message button -->
+
+
+
+    </div>
+    <!-- end of section 3 -->
+
+    {% endblock content %}

@@ -5,36 +5,38 @@
 <link rel="stylesheet" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\bulma-0.8.0\css\bulma.min.css">
 <script defer src="https://use.fontawesome.com/releases/v5.0.6/css/all.css"></script>
 <link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css">
-
+<head>
 <style>
-
+  a {
+    text-decoration: none;
+  }
 </style>
+</head>
 <body>
   <section class="index">
     <div class="container">
       <div class="columns">
 
-        <!-- beginning of chat section -->
+        <!-- beginning section 1 -->
         <div class="column1">
-          <!--  <p> this is a test, should be on the right</p> -->
-
-          <!-- insert buttons: Group-Finder & Chat -->
           <div class="buttons">
             <ul>
               <li>
-                <!-- Group Finder Button -->
-                <button class="button is-medium is-warning is-light is-outlined">
+                <!-- visit user page -->
+                <a class="button is-medium is-warning is-light is-outlined" href="{% url 'share:user_profile' post.user.id%}">
                    <span class="is-outlined">
-                     <i class="fab fa-Group Finder"></i>
-                   </span>
-                   <span>Group Finder</span>
-                 </button>
+                       <i class="fab fa-Visit User Page"></i>
+                   <span>Visit User Page</span>
+                 </a>
               </li>
               <li>
-                 <!-- Chat Button -->
-                <button class="button is-medium is-warning is-light is-outlined">
-                  <span>Chat</span>
-                </button>
+                 <!-- reblog -->
+                <a class="button is-medium is-warning is-light is-outlined">
+                  <span class="is-outlined">
+                    <i class="fab fa-Reblog"></i>
+                  </span>
+                  <span>Reblog Post</span>
+                </a>
               </li>
             </ul>
           </div>
@@ -50,26 +52,61 @@
           {% endif %}
 
           <div class="notification is-warning">
-            <div class = "content">
-              <figure class="image is-square">
-                <img scr= "{{ post.photo }}">
-              </figure>
-
-              <article class="media notification is-warning">
-                <!-- user icon section -->
-                <figure class="media-left">
-                  <span class="image is-64x64">
-                    <img src="insert link to user icon">
-                  </span>
-                </figure>
-
-                <!-- post header and body -->
-                <div class="media-content">
-                  <div class = "content">
-                    <h1>{{ post.user.username }}</h1>
-                    <h1>{{ post.post_header }}</h1>
-                    <p class="subtitle is-size-6">{{ post.post_body }}</p>
+<!-- user icon section -->
+            <section class="section is-paddingless-horizontal" style="padding-top:0; padding-bottom:0;">
+              <div class="container">
+                <article class="media center">
+                  <figure class="media-left">
+                    <figure class="image is-64x64">
+                      <a href="{% url 'share:user_profile' post.user.id%}"><img src="user icon"></a>
+                    </figure>
+                  </figure>
+                  <div class="media-content">
+                    <div class="content">
+                      <p>
+                        <strong>{{ post.user.first_name}} {{ post.user.last_name }}</strong>
+                        <a href="{% url 'share:user_profile' post.user.id%}">{{ post.user.username }}</a><br>
+                        <span class="has-text-grey"><time datetime="{{ post.post_created }}">{{ post.post_created }}</time></span>
+                      </p>
+                    </div>
                   </div>
+                </article>
+              </div>
+            </section>
+            <div class = "content">
+              <article class="media notification is-warning">
+                <!-- post header and body -->
+                <!-- for posts with only text-->
+                {% if not post.post_header and not post.photo %}
+                  <div class="content">
+                      <p>{{ post.post_body }}</p>
+                  </div>
+
+                <!-- for posts with only photos-->
+                {% elif not post.post_header and not post.post_body %}
+                  <div class="content">
+                      <figure class="image is-square">
+                          <img src="{{ post.photo }}">
+                      </figure>
+                  </div>
+
+                <!-- for posts with only headers -->
+                {% elif not post.post_body and not post.photo %}
+                  <div class="content">
+                      <h1 class="title is-size-3">{{ post.post_header }}</h1>
+                  </div>
+
+                <!--for regular posts -->
+                {% else %}
+                  <div class="content">
+                      <figure class="image is-square">
+                          <img src="{{ post.photo }}">
+                      </figure>
+                      <h1 class="title is-size-3">{{ post.post_header }}</h1>
+                      <p style="font-size:120%;">{{ post.post_body }}</p>
+                  </div>
+
+                {% endif %}
 
                 <!-- comment button, repost, like -->
                 <!-- <nav class="level is-mobile">
@@ -86,10 +123,9 @@
                   </div>
                 </nav> -->
               </div>
-              </article>
               <!-- edit post option -->
               {% if user.id == post.user.id %}
-                <a class = "button is-warning is-medium" href="{% url 'share:edit_post' post.id %}"> Edit Post </a>
+                <a class = "button is-warning is-light is-outlined is-medium" href="{% url 'share:edit_post' post.id %}"> Edit Post </a>
               {% endif %}
             </div>
           </div>
