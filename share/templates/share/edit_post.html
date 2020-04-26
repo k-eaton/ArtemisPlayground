@@ -1,62 +1,52 @@
 {% extends "share/base.html" %}
 {% block content %}
-
+{% if error %}
+<h3 style="color: red">{{ error }}</h3>
+{% endif %}
 
 <div class="column" >
   <h4 class="title is-5"> Update Post</h4>
-  {% if error %}
-         <h3 style="color: red">{{ error }}</h3>
-     {% endif %}
-  <form action="{% url 'share:update_post' post.id %}" method="post">
+  <form action="{% url 'share:update_post' post.id %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="field">
       <div class="control">
         <label class="label">Media Upload</label>
-        <form method="post" enctype="/media/">
-          {% csrf_token %}
-          <input type="file" name="Media">
-          <button type="submit">Upload</button>
-        </form>
-        <br><br>
-        <label class="checkbox">
-          <br>Is this a video upload?
-              <input type="checkbox"  id="video" name="video" />
-        </label>
-    </div>
-  </div>
-
-    <div class="field">
-      <div class="control">
-        <label class="label">Title</label>
-        <input class="input is-primary" value="{{ post.post_header }}" type="text" name="post_header">
+        <input value="{{post.photo.url}}" type="file" name="photo">
       </div>
     </div>
 
     <div class="field">
-          <div class="control">
-            <label class="label">Description</label>
-            <textarea class="input is-primary" name="post_body" namerows="4" cols="50" >{{ post.post_body }}
-            </textarea>
-          </div>
+      <div class="control">
+        <label class="label">Title</label>
+        <input class="input is-warning" value="{{ post.post_header }}" placeholder="Post Title" type="text" id="post_header" name="post_header">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <label class="label">Description</label>
+        <textarea class="input is-warning" value="{{post.post_body}}" placeholder="Description" id="post_body" name="post_body" >{{ post.post_body }}
+        </textarea>
+      </div>
     </div>
 
 
     <br><br><br>
 
-    <div class="field">
-        <div class="control">
-          <button class="button is-success is-outlined is-fullwidth" type="submit" value="Update">Update</button>
-        </div>
+
+    <div class="form-group">
+      <button class="button is-success is-outlined is-fullwidth" type="submit" value="Update">Update</button>
     </div>
 
-    </form>
 
-    <h3 class="title is-5">Delete Post</h3>
-    <form action="{% url 'share:delete_post' post.id %}" method="post">
-        {% csrf_token %}
-         <button class="button is-danger is-outlined is-fullwidth" type="submit" name="delete" value="Delete">Delete</button>&nbsp;
-    </form>
+  </form>
+
+  <h3 class="title is-5">Delete Post</h3>
+  <form action="{% url 'share:delete_post' post.id %}" method="post">
+    {% csrf_token %}
+    <button class="button is-danger is-outlined is-fullwidth" type="submit" name="delete" value="Delete">Delete</button>&nbsp;
+  </form>
 
 </div>
 

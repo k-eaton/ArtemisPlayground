@@ -28,13 +28,14 @@ SECRET_KEY = 'cq=tk2p#3jsjx7uujm&r_f%a74$yp2xjyell=zlybclx)*9zdd'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CRISPY_TEMPLATE_PACK='bootstrap3'
 
 # Application definition
 
 INSTALLED_APPS = [
 
     'share.apps.ShareConfig', #iserrano0
+    'crispy_forms',
     'storages', # s3Integration
 
     'django.contrib.admin',
@@ -146,4 +147,3 @@ MEDIAFILES_LOCATION = 'media'
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
 MEDIA_URL = '/media/'
-

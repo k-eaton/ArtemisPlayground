@@ -9,7 +9,7 @@ from .models import Script, Problem, Coder
 from django.contrib.auth.models import User
 
 from django.shortcuts import get_object_or_404 #iserrano4
-from .models import Media, Post, Comment
+from .models import Media, Post, Comment, Photo
 
 # s3Integration
 import os, json, boto3
@@ -19,7 +19,7 @@ from django.conf import settings
 # from django.core.files.storage import FileSystemStorage
 from django.template import RequestContext, Template
 from custom_storages import MediaStorage
-
+from .forms import UserUpdateForm, ProfileUpdateForm
 
 
 # Create your views here.
@@ -140,6 +140,33 @@ def edit_profile(request, user_id):
             return render(request, "share/login.html",
             {"Error": "Please login to edit profile"})
 
+
+#iserrano6
+# def update_profile(request, user_id):
+#     if request.method == "POST":
+#         user = request.user
+#         if not user.is_authenticated:
+#             return redirect("share:login", {"user":user, "error":"Please Login"})
+#
+#         u_form = UserUpdateForm(request.POST, instance=request.user)
+#         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+#
+#         if u_form.is_valid() and p_form.is_valid():
+#             u_form.save()
+#             p_form.save()
+#             return redirect('share/dashboard.html', {"user":user, "error":"Profile Settings Updated!"})
+#
+#     else:
+#         u_form = UserUpdateForm(instance=request.user)
+#         p_form = ProfileUpdateForm(instance=request.user.profile)
+#
+#     context = {
+#         'u_form':u_form,
+#         'p_form':p_form
+#     }
+#
+#     return render(request, 'share/dashboard.html', context)
+
 #iserrano4
 def update_profile(request, user_id):
     if request.method == "POST":
@@ -148,24 +175,34 @@ def update_profile(request, user_id):
             return HttpResponse(status=500)
 
         user_info = get_object_or_404(User, pk=user_id)
+        user_profile = get_object_or_404(Profile, pk=user_id)
 
-        if not request.POST['username'] or not request.POST['email'] or not request.POST['password']:
+        if not request.POST.get('username') or not request.POST.get('email'):
+            print("I am inside if")
             return render(request, "share/edit_profile.html", {"user_info":user_info, "Error":"Fill out required fields"})
-
         else:
-            #figure out how to get icon change option
-            # user_page_name: request.POST['User_page_name']
-            first_name = request.POST['first Name']
-            last_name = request.POST['last Name']
-            username = request.POST['username']
-            email = request.POST['email']
-            password = request.POST['password']
+            page_name = request.POST.get('page_name')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            # password = request.POST['password']
 
-
-        if user_info.user.id == user.id:
-            User.objects.filter(pk=user_id).update(first_name=first_name, last_name=last_name, username=username, email=email, password=password, bio=bio)
+        if user_info.id == user.id:
+            User.objects.filter(pk=user_id).update(first_name=first_name, last_name=last_name, username=username, email=email)
+            print("I'm here")
+            Profile.objects.filter(pk=user_id).update(page_name=page_name)
+            user=get_object_or_404(User, pk=user_id)
+            user = request.user
+            all_posts=Post.objects.all()
+            return render(request, "share/user_profile.html", {"user":user, "all_posts":all_posts, "error":"Profile Updated!"})
         else:
             return render(request, "share/edit_profile.html", {"error":"Unable to update profile"})
+
+    else:
+        user = request.user
+        all_posts=Post.objects.all()
+        return render(request, "share/user_profile", {"user":user, "all_posts":all_posts, "error":"not a post request!"})
 
 
 
@@ -178,7 +215,7 @@ def delete_profile(request, user_id):
 
         user_info = get_object_or_404(User, pk=user_id)
 
-        if user_info.user.id == user.id:
+        if user_info.id == user.id:
             User.objects.get(pk=user_id).delete()
             return redirect("share/signup.html")
         else:
@@ -286,35 +323,28 @@ def update_post(request, post_id):
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
         post = get_object_or_404(Post, pk=post_id)
-        print('Testing')
-        print('post_id:', post_id)
 
-        if not request.POST["post_header"] and not request.POST["post_body"] and not request.POST["photo"]:
-            return render(request, "share/edit_post.html", {"error":"Please fill in at least one field"})
+        if not request.POST.get('post_header') and not request.POST.get('post_body'):
+            return render(request, "share/edit_post.html", {"user":user, "post":post, "error":"Please fill in at least one field"})
+
         else:
-            photo = request.POST["photo"]
-            print(photo.name)
-            print(photo.size)
+            # photo = request.POST.get("photo")
+            post_header = request.POST.get("post_header")
+            post_body = request.POST.get("post_body")
 
-            if video == 'on':
-                video=True
+            if post.user.id == user.id:
+                # Photo.objects.filter(pk=post_id).update(photo=photo)
+                Post.objects.filter(pk=post_id).update(post_header=post_header, post_body=post_body)
+                post = get_object_or_404(Post, pk=post_id)
+                all_posts=Post.objects.all()
+                return render(request, "share/dashboard.html", {"user":user, "all_posts":all_posts, "error":"Post updated"})
             else:
-                video=False
+                return render(request, "share/edit_post.html", {"error":"Unable to update post"})
 
-            post_header = request.POST["post_header"]
-            post_body = request.POST["post_body"]
-
-        if post.user.id == user.id:
-            Post.objects.filter(pk=post_id).update(post_header=post_header, post_body=post_body, media_upload=media_upload)
-            post = get_object_or_404(Post, pk=post_id)
-            print('******Testing*******')
-            print('photo:', photo_id)
-            print('post_header: ', post_header)
-            print('post_header: ', post_header)
-            print('******Testing*******')
-            return render("share/user_profile.html", {"error":"Post updated"})
-        else:
-            return render(request, "share/edit_post.html", {"error":"Unable to update post"})
+    else:
+        user = request.user
+        all_posts = Post.objects.all()
+        return render(request, "share/user_profile.html", {"user":user, "all_posts":all_posts, "error":"It was not a POST request"})
 
 #iserrano4
 def delete_post(request, post_id):
@@ -327,21 +357,26 @@ def delete_post(request, post_id):
 
         if post.user.id == user.id:
             Post.objects.get(pk=post_id).delete()
-            return render(request, "share/user_profile.html", {"error":"Post Deleted!"})
+            return render(request, "share/dashboard.html", {"error":"Post Deleted!"})
         else:
             return render(request, "share/dashboard.html", {"error": "Non-authorized user; Unable to delete post"})
 
 #iserrano4
-def create_comment(request):
+def create_comment(request, post_id):
     if request.method == "POST":
         user = request.user
         if not user.is_authenticated:
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
         post = get_object_or_404(Post, pk=post_id)
-
+        print("*************************Testing")
+        print(post)
         commenter = user
-        comment_body = request.POST["comment_body"]
+        print("*************************Testing")
+        print(commenter)
+        comment_body = request.POST.get('comment_body')
+        print("*************************Testing")
+        print(comment_body)
 
         try:
             comment = Comment.objects.create(commenter=commenter, comment_body=comment_body)
@@ -356,22 +391,22 @@ def create_comment(request):
             return render(request, "share/post.html", {"error":"Unable to leave a comment at the moment!"})
 
     else:
-        return render(request, "share/post.html", {"error":"Unable to load post!"})
+        return render(request, "share/post.html", {"error":"Unable to load leave a comment!"})
 
 
-def delete_comment(request):
+def delete_comment(request, comment_id):
     if request.method == "POST":
         user = request.user
         if not user.is_authenticated:
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
-        comment = get_object_or_404(Comment, pk=comment_id)
+        comment = get_object_or_404(Comment, pk=comment.id)
         post = get_object_or_404(Post, pk=comment.post.id)
 
         if comment.user.id == user.id:
-            Comment.objects.get(pk=comment_id).delete()
+            Comment.objects.get(pk=comment.id).delete()
 
-            comment = Comment.objects.filter(post=post_id)
+            comment = Comment.objects.filter(post=post.id)
             user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
             return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment})
 

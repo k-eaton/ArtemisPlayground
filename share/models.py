@@ -60,17 +60,18 @@ def user_directory_path(instance, filename):
     # current_user = instance.user.user
     return 'user_upload/user_{0}/{1}'.format(instance.user.id, filename)
 
-# class Profile(models.Model):
-#     def delete_user(self):
-#         self.User.delete()
-#
-#     def __str__(self):
-#         return f'{self.user.username} Profile'
-#
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     icon = models.ImageField(upload_to=user_directory_path)
+class Profile(models.Model):
+    #FK
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
 
+    # icon = models.ImageField(default='default.png', upload_to=user_directory_path)
+    page_name = models.CharField(max_length=50, blank=True, unique=False)
 
+    def __str__(self):
+        return f'{self.user.username} Profile'
+
+    def delete_user(self):
+        self.User.delete()
 
 class Photo(models.Model):
 
@@ -128,6 +129,9 @@ class Comment(models.Model):
     comment_created = DateTimeField(auto_now_add=True)
     comment_updated = DateTimeField(auto_now=True)
     comment_body = models.TextField(max_length=200, unique=False, blank=False)
+
+    class Meta:
+        unique_together = (('user', 'post'),)
 
 
 #iserrano4 - attempt to create Hastag Model
