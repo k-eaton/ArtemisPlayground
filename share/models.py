@@ -55,11 +55,22 @@ class Script(models.Model):
     updated = models.DateField(auto_now=True)
 
 #s3Integration
-
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     # current_user = instance.user.user
     return 'user_upload/user_{0}/{1}'.format(instance.user.id, filename)
+
+# class Profile(models.Model):
+#     def delete_user(self):
+#         self.User.delete()
+#
+#     def __str__(self):
+#         return f'{self.user.username} Profile'
+#
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     icon = models.ImageField(upload_to=user_directory_path)
+
+
 
 class Photo(models.Model):
 

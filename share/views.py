@@ -167,23 +167,23 @@ def update_profile(request, user_id):
         else:
             return render(request, "share/edit_profile.html", {"error":"Unable to update profile"})
 
+
+
 #iserrano4
 def delete_profile(request, user_id):
     if request.method == "POST":
         user = request.user
         if not user.is_authenticated:
-            return HttpResponse(status=500)
+            return redirect("share:login", {"user":user, "error":"Please Login"})
 
         user_info = get_object_or_404(User, pk=user_id)
 
-        if user_info.id == user.id:
+        if user_info.user.id == user.id:
             User.objects.get(pk=user_id).delete()
             return redirect("share/signup.html")
         else:
             return render(request, "share/edit_profile.html", {"user":user, "error": "Unable to delete account"})
 
-    else:
-        return HttpResponse(status=500)
 
 #iserrano4
 def show_post(request, post_id):
@@ -326,7 +326,7 @@ def delete_post(request, post_id):
         post = get_object_or_404(Post, pk=post_id)
 
         if post.user.id == user.id:
-            Post.object.get(pk=post_id).delete()
+            Post.objects.get(pk=post_id).delete()
             return render(request, "share/user_profile.html", {"error":"Post Deleted!"})
         else:
             return render(request, "share/dashboard.html", {"error": "Non-authorized user; Unable to delete post"})
