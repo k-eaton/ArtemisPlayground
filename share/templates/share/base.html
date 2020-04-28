@@ -13,11 +13,11 @@
 <body>
 <nav class="navbar is-warning" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-        <a class="navbar-item" href="{% url 'share:index' %}">
+        <a class="navbar-item" href="{% url 'share:dashboard' %}">
             <img src="{% static 'share/images/bow_06_t.PNG' %}" alt=" icon">
-            Artemis's<br>Playground
+            <h1 class="title is-size-4" style="font-family: sans-serif,times"> Artemis's Playground </h1>
         </a>
-        </a class="navbar-item">
+
 
 
       <!--   https://bulma.io/documentation/components/navbar/  for responsive sites-->
@@ -42,26 +42,28 @@
          <div class="navbar-item">
 
            <!-- Search bar addon -->
-           <div class="field has-addons">
-             <div class="control">
-               <input class="input" type="text" placeholder="Search">
-             </div>
-             <div class="control">
-               <a class="button is-warning is-light is-outlined">
-                 Search
-               </a>
-             </div>
-           </div>
+           <div class="navbar-item">
+                    <form action="{% url 'share:search' %}" method="post">
+                        {% csrf_token %}
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" name="query" placeholder="search">
+                            <span class="icon is-left">
+                        <i class="fas fa-search"></i>
+                      </span>
+                        </p>
+                    </form>
+              </div>
            <!-- End Search bar addon -->
-
-           <a class="navbar-item" href="{% url 'share:dashboard' %}">My Dashboard</a>
-
+           <a class="navbar-item" href="{% url 'share:dashboard' %}">
+             <span class="icon">
+               <i class="fas fa-home"></i>
+          </a>
            <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
-                try to insert user icon
+                  <img src="{{user.profile.icon.url}}">
               </a>
 
-              <div class="navbar-dropdown">
+              <div class="navbar-dropdown is-right">
 
                  <div class="navbar-item">
                      {% if request.path == "/login" or request.path == "/loguser" %}
@@ -72,10 +74,20 @@
                       <a class="button is-warning is-light is-outlined" href="{% url 'share:login' %}">Login</a>
 
                      {% else   %}
-                     <a class="navbar-item" href="{% url 'share:publish_post' %}"> Make a Post </a>
-                     <a class="navbar-item" href="{% url 'share:edit_profile' user.id %}">Edit Profile</a>
-                     <a class="navbar-item" href="{% url 'share:logout' %}">Logout {{user.username}}</a>
-
+                     <ul>
+                       <li>
+                         <a class="navbar-item" href="{% url 'share:publish_post' %}"> Make a Post </a>
+                       </li>
+                       <li>
+                         <a class="navbar-item" href="{% url 'share:user_profile' user.id %}">Profile</a>
+                       </li>
+                       <li>
+                         <a class="navbar-item" href="{% url 'share:edit_profile' user.id %}">Settings</a>
+                       </li>
+                       <li>
+                         <a class="navbar-item" href="{% url 'share:logout' %}">Logout {{user.username}}</a>
+                       </li>
+                      </ul>
                      {% endif %}
 
                    </div>

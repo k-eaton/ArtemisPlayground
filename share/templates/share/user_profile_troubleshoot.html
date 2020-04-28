@@ -1,0 +1,111 @@
+<!-- list problems and scripts that belong to this coder -->
+{% extends "share/base.html" %}
+{% block content %}
+<!-- user account header -->
+
+<div class="tile is-ancestor has-text-centered">
+    <div style="margin: auto;" class="tile is-parent">
+        <div class="tile is-child box">
+            <h1 class="title is-2"> Hello &nbsp<span style="color:#1496ed">{{ user.username }}</span></h1>
+
+            <h4 class="title is-5">You can publish new problems here:</h4>
+
+        </div>
+    </div>
+</div>
+
+<!-- beginning of post line up -->
+<div class="columns">
+  <!-- beginning of section 1 -->
+  <div class="column1">
+
+
+
+  </div>
+  <!-- end section 1 -->
+  <!-- beginning of section 2-->
+    <div class="column2">
+      <hr>
+      <!-- user info -->
+      <div class="notification is-warning is-light">
+        <section class="section is-paddingless-horizontal" style="padding-top:0;">
+          <div class="container">
+            <article class="media center">
+              <figure class="media-left">
+                <figure class="image is-64x64">
+                  <a href="{% url 'share:user_profile' p.user.id%}"><img src=""></a>
+                </figure>
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong>{{ p.user.first_name}} {{ p.user.last_name }}</strong>
+                    <a href="{% url 'share:user_profile' p.user.id%}">{{ p.user.username }}</a><br>
+                    <span class="has-text-grey"><time datetime="{{ p.post_created }}">{{ p.post_created }}</time></span>
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+        <!-- Username info -->
+          {% for p in my_posts %}
+          <div class="notification is-warning">
+            <div class='content'>
+
+              <figure class="image is-square">
+                <a href="{% url 'share:post' p.id %}">
+                  {% load media %}
+                  <img src="{{ p.photo }}">
+                  <img src="{% media p.photo %}">
+                </a>
+              </figure>
+
+              <article class="media notification is-warning">
+                <!-- user icon section -->
+                <figure class="media-left">
+                  <span class="image is-64x64">
+
+                  </span>
+                </figure>
+
+                <!-- post header and body -->
+                <div class="media">
+                  <div class = "content">
+                    <!-- <h1 class="title is-size-4">{{ p.user.username }}</h1> -->
+                    <a href="{% url 'share:post' p.id %}">
+                      <h1>{{ p.post_header }}</h1>
+                    </a>
+                    <p class="subtitle is-size-6">{{ p.post_body }}</p>
+                  </div>
+
+                <!-- comment button, repost, like -->
+                <!--
+                <nav class="level is-mobile">
+                  <div class="level-left">
+                    <a class="level-item">
+                      <span class="icon is-small"><i class="fas fa-comment"></i></span>
+                    </a>
+                    <a>
+                      <span class="icon is-small"><i class="fas fa-retweet"></i></span>
+                    </a>
+                    <a>
+                      <span class="icon is-small"><i class="fas fa-heart"></i></span>
+                    </a>
+                  </div>
+                </nav> -->
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+    </div>
+<!-- end of section 2 -->
+<!-- beginning section 3 -->
+<div class="column3">
+
+
+
+</div>
+<!-- end of section 3 -->
+
+{% endblock content %}
