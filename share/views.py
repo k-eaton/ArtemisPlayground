@@ -395,27 +395,28 @@ def create_comment(request, post_id):
 
 
 def delete_comment(request, comment_id):
-    if request.method == "POST":
-        user = request.user
-        if not user.is_authenticated:
-            return redirect("share:login", {"user":user, "error":"Please Login"})
-
-        comment = get_object_or_404(Comment, pk=comment.id)
-        post = get_object_or_404(Post, pk=comment.post.id)
-
-        if comment.user.id == user.id:
-            Comment.objects.get(pk=comment.id).delete()
-
-            comment = Comment.objects.filter(post=post.id)
-            user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
-            return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment})
-
-        else:
-            user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
-            return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment, "error":"Unable to delete comment at the moment!"})
-
-    else:
-        return HttpResponse(status=500)
+    # if request.method == "POST":
+    #     user = request.user
+    #     if not user.is_authenticated:
+    #         return redirect("share:login", {"user":user, "error":"Please Login"})
+    #
+    #     comment = get_object_or_404(Comment, pk=comment.id)
+    #     post = get_object_or_404(Post, pk=comment.post.id)
+    #
+    #     if comment.user.id == user.id:
+    #         Comment.objects.get(pk=comment.id).delete()
+    #
+    #         comment = Comment.objects.filter(post=post.id)
+    #         user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
+    #         return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment})
+    #
+    #     else:
+    #         user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
+    #         return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment, "error":"Unable to delete comment at the moment!"})
+    #
+    # else:
+    #     return HttpResponse(status=500)
+    pass
 
 
 # s3Integration

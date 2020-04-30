@@ -36,11 +36,13 @@ urlpatterns = [
     #iserrano6
     path('user/<int:user_id>/user_profile', views.user_profile, name="user_profile"),
     path('post/<int:post_id>/show_post', views.show_post, name='show_post'),
-    path('comment/<int:comment_id>/create_comment', views.create_comment, name="create_comment"),
+    path('comment/<int:post_id>/create_comment', views.create_comment, name="create_comment"),
     path('comment/<int:comment_id>/delete_comment', views.delete_comment, name="delete_comment"),
     path('search', views.search, name='search'),
 
     # s3Integration
     path('upload', views.upload, name='upload'),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
