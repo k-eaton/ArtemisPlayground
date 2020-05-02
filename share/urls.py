@@ -40,6 +40,11 @@ urlpatterns = [
     path('comment/<int:comment_id>/delete_comment', views.delete_comment, name="delete_comment"),
     path('search', views.search, name='search'),
 
+    #iserrano7
+    path('user/<int:user_id>/add_friends', views.add_friends, name="add_friends"),
+    path('user/<int:user_id>/remove_friends', views.remove_friends, name="remove_friends"),
+    # path(r'^connect/(?P<operation>.+)/(?P<pk>\d+)/$', views.change_friends, name='change_friends'),
+
     # s3Integration
     path('upload', views.upload, name='upload'),
 

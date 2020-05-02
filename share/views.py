@@ -8,8 +8,9 @@ from .models import Script, Problem, Coder
 #iserrano2 - import User model
 from django.contrib.auth.models import User
 
-from django.shortcuts import get_object_or_404 #iserrano4
-from .models import Media, Post, Comment, Photo
+from django.shortcuts import get_object_or_404#iserrano4
+from .models import Media, Post, Comment, Photo, Profile, Friend
+from django.template import RequestContext
 
 # s3Integration
 import os, json, boto3
@@ -121,6 +122,11 @@ def user_profile(request, user_id):
             # user = get_object_or_404(User, user_id)
             my_posts = Post.objects.filter(user=user.id)
 
+            friend = Friend.objects.get_or_create(current_user=request.user)
+            friends = Friend.objects.all()
+
+            args = {'friends':friends}
+
             return render(request, "share/user_profile.html", {"my_posts":my_posts})
 
 #iserrano4
@@ -231,7 +237,7 @@ def show_post(request, post_id):
         else:
             post = get_object_or_404(Post, pk=post_id)
 
-            comments = Comment.objects.filter(post=post_id)
+            comments = Comment.objects.filter(post=post.id)
             user_comment = Comment.objects.filter(user=user.id).filter(post=post.id)
 
         return render(request, "share/post.html", {"user":user, "post":post})
@@ -379,11 +385,19 @@ def create_comment(request, post_id):
         print(comment_body)
 
         try:
-            comment = Comment.objects.create(commenter=commenter, comment_body=comment_body)
+            print("*************************Testing")
+            print("i am inside the try clause")
+            # user = models.ForeignKey(User, on_delete=models.CASCADE)
+            # post = models.ForeignKey(Post, on_delete=models.CASCADE)
+            #
+            # comment_created = DateTimeField(auto_now_add=True)
+            # comment_updated = DateTimeField(auto_now=True)
+            # comment_body = models.TextField(max_length=200, unique=False, blank=False)
+            comment = Comment.objects.create(user=commenter, post=post, comment_body=comment_body)
             comment.save()
 
             comment = Comment.objects.filter(post=post_id)
-            user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
+            user_comment = Comment.objects.filter(user=user.id).filter(post=post.id)
 
             return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment})
 
@@ -465,3 +479,34 @@ def search(request):
 
     else:
         return HttpResponse(status=500)
+
+#iserrano7
+def change_friends(request, operation, pk):
+    new_friend=User.objects.get(pk=user_id)
+    if operation == 'add':
+        Friend.add_friend(request.user, new_friend)
+    elif operation == 'remove':
+        Friend.remove_friend(request.user, new_friend)
+    return redirect("share/dashboard.html")
+
+def add_friends(request, User):
+    if request.method == "POST":
+        current_user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+
+        new_friend=User.objects.get(pk=user_id)
+        Friend.add_friend(request.user, new_friend)
+
+        return render(request, "share/dashboard.html", {"error":"Following User!"})
+
+def remove_friends(request, User):
+    if request.method == "POST":
+        current_user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+
+        new_friend=User.objects.get(pk=user_id)
+        Friend.remove_friend(request.user, new_friend)
+
+        return render(request, "share/dashboard.html", {"error":"Unfollowed User"})

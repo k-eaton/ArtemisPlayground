@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import uuid
 from django.db.models.fields import DateTimeField
+from datetime import datetime
+
 #attempt hashtags later:
 #https://stream-blog.netlify.app/build-a-scalable-twitter-clone-with-django-and-stream/#hashtags-feeds
 # from django.template.defaultfilters import slugify
@@ -60,6 +62,22 @@ def user_directory_path(instance, filename):
     # current_user = instance.user.user
     return 'user_upload/user_{0}/{1}'.format(instance.user.id, filename)
 
+
+class Friend(models.Model):
+    users = models.ManyToManyField(User)
+    current_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner', null=True)
+
+    @classmethod
+    def add_friend(cls, current_user, new_friend):
+        friend, created = cls.objects.get_or_create(current_user=current_user)
+        friend.users.add(new_friend)
+
+    @classmethod
+    def remove_friend(cls, current_user, new_friend):
+        friend, created = cls.objects.get_or_create(current_user=current_user)
+        friend.users.remove(new_friend)
+
+
 class Profile(models.Model):
     #FK
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
@@ -68,7 +86,7 @@ class Profile(models.Model):
     page_name = models.CharField(max_length=50, blank=True, unique=False)
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return '{self.user.username} Profile'
 
     def delete_user(self):
         self.User.delete()

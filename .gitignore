@@ -9,3 +9,6 @@ herokuCommands.txt
 *.jpeg
 *.gif
 s3.txt
+.DS_Store
+*.pyc
+*.tmproj

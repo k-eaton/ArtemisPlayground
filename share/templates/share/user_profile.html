@@ -19,8 +19,10 @@
   <div class="column1">
     <hr>
     <h1 class="title is-3">&nbsp<span style="color:#1496ed">Following</span></h1>
-    {% for f in following %}
-
+    {% for friend in friends %}
+      <a href="{% url 'share:user_profile' friend.user.id%}">
+        <h3>{{ friend.username }}</h3>
+      </a>
     {% endfor %}
   </div>
   <!-- end section 1 -->
@@ -106,18 +108,20 @@
       <div class="buttons">
         <ul>
           <li>
+            <a href="{% url 'share:add_friends' user.id %}">
             <button class="button is-medium is-warning is-light is-outlined">
               <span class="is-outlined">
-                <i class="fab fa-Follow Me"></i>
+                  <i class="fab fa-Follow Me"></i>
               </span>
               <span>Follow Me!</span>
             </button>
+            </a>
           </li>
 
           <li>
             <button class="button is-medium is-warning is-light is-outlined">
               <span class="is-outlined">
-                <i class="fab fa-Message Me"></i>
+                  <i class="fab fa-Message Me"></i>
               </span>
               <span>Message Me!</span>
             </button>
