@@ -8,7 +8,7 @@
       <figure class="image is-64x64">
         <img src="{{user.profile.icon.url}}">
       </figure>
-      <h1 class="title is-2">&nbsp<span style="color:#1496ed">{{ user.username }}</span></h1>
+      <h1 class="title is-2">&nbsp<span style="color:#1496ed">{{ my_profile.page_name }}</span></h1>
     </div>
   </div>
 </div>
@@ -20,9 +20,9 @@
     <hr>
     <h1 class="title is-3">&nbsp<span style="color:#1496ed">Following</span></h1>
     {% for friend in friends %}
-      <a href="{% url 'share:user_profile' friend.user.id%}">
-        <h3>{{ friend.username }}</h3>
-      </a>
+      <a href="{% url 'share:user_profile' friend.user.id %}">
+        <h3>{{ friend.user.username }}</h3></a><a class="button is-warning is-small"
+        href="{% url 'share:change_friends' operation='remove' pk=friend.pk %}">Unfollow User</a>
     {% endfor %}
   </div>
   <!-- end section 1 -->
@@ -108,7 +108,7 @@
       <div class="buttons">
         <ul>
           <li>
-            <a href="{% url 'share:add_friends' user.id %}">
+            <a href="{% url 'share:change_friends' operation='add' pk=user.pk %}">
             <button class="button is-medium is-warning is-light is-outlined">
               <span class="is-outlined">
                   <i class="fab fa-Follow Me"></i>

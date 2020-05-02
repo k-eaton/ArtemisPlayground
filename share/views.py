@@ -115,19 +115,25 @@ def dashboard(request):
 
 def user_profile(request, user_id):
     if request.method == "GET":
-        user = request.user
-        if not user.is_authenticated:
-            return redirect("share:login", {"user":user, "error":"Please Login"})
-        else:
-            # user = get_object_or_404(User, user_id)
-            my_posts = Post.objects.filter(user=user.id)
+        # user = request.user
+        # if not user.is_authenticated:
+        #     return redirect("share:login", {"user":user, "error":"Please Login"})
+        # else:
+        # user = get_object_or_404(User, user_id)
+        user = get_object_or_404(User, pk=user_id)
+        my_posts = Post.objects.filter(user=user.id)
+        my_profile = Profile.objects.get(user=user.id)
+        friend = Friend.objects.get_or_create(current_user=request.user)
+        friends = Friend.objects.all()
 
-            friend = Friend.objects.get_or_create(current_user=request.user)
-            friends = Friend.objects.all()
+        args = {
+            "user":user,
+            "my_posts":my_posts,
+            "my_profile":my_profile,
+            "friends":friends
+        }
 
-            args = {'friends':friends}
-
-            return render(request, "share/user_profile.html", {"my_posts":my_posts})
+        return render(request, "share/user_profile.html", {"my_posts":my_posts})
 
 #iserrano4
 def edit_profile(request, user_id):
@@ -146,32 +152,6 @@ def edit_profile(request, user_id):
             return render(request, "share/login.html",
             {"Error": "Please login to edit profile"})
 
-
-#iserrano6
-# def update_profile(request, user_id):
-#     if request.method == "POST":
-#         user = request.user
-#         if not user.is_authenticated:
-#             return redirect("share:login", {"user":user, "error":"Please Login"})
-#
-#         u_form = UserUpdateForm(request.POST, instance=request.user)
-#         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-#
-#         if u_form.is_valid() and p_form.is_valid():
-#             u_form.save()
-#             p_form.save()
-#             return redirect('share/dashboard.html', {"user":user, "error":"Profile Settings Updated!"})
-#
-#     else:
-#         u_form = UserUpdateForm(instance=request.user)
-#         p_form = ProfileUpdateForm(instance=request.user.profile)
-#
-#     context = {
-#         'u_form':u_form,
-#         'p_form':p_form
-#     }
-#
-#     return render(request, 'share/dashboard.html', context)
 
 #iserrano4
 def update_profile(request, user_id):
@@ -237,7 +217,7 @@ def show_post(request, post_id):
         else:
             post = get_object_or_404(Post, pk=post_id)
 
-            comments = Comment.objects.filter(post=post.id)
+            comments = Comment.objects.filter(post=post_id)
             user_comment = Comment.objects.filter(user=user.id).filter(post=post.id)
 
         return render(request, "share/post.html", {"user":user, "post":post})
@@ -474,7 +454,8 @@ def search(request):
             return render (request, "share/search_posts.html", {"error":"There's nothing here =("})
 
         posts = Post.objects.filter(post_header__icontains=query) | Post.objects.filter(post_body__icontains=query)
-
+        profiles = Profile.objects.filter(page_name__icontains=query)
+        users = User.objects.filter(username__icontains=query) | User.objects.filter(first_name__icontains=query) | User.objects.filter(last_name__icontains=query)
         return render(request, "share/search_posts.html", {"user":user, "posts":posts})
 
     else:
@@ -482,31 +463,33 @@ def search(request):
 
 #iserrano7
 def change_friends(request, operation, pk):
-    new_friend=User.objects.get(pk=user_id)
+    friend=User.objects.get(pk=pk)
     if operation == 'add':
-        Friend.add_friend(request.user, new_friend)
+        Friend.add_friend(request.user, friend)
     elif operation == 'remove':
-        Friend.remove_friend(request.user, new_friend)
-    return redirect("share/dashboard.html")
+        Friend.remove_friend(request.user, friend)
+    return render(request, "share/dashboard.html", {"error":"Now following {{friend.users.username}}!"})
 
-def add_friends(request, User):
-    if request.method == "POST":
-        current_user = request.user
-        if not user.is_authenticated:
-            return redirect("share:login", {"user":user, "error":"Please Login"})
-
-        new_friend=User.objects.get(pk=user_id)
-        Friend.add_friend(request.user, new_friend)
-
-        return render(request, "share/dashboard.html", {"error":"Following User!"})
-
-def remove_friends(request, User):
-    if request.method == "POST":
-        current_user = request.user
-        if not user.is_authenticated:
-            return redirect("share:login", {"user":user, "error":"Please Login"})
-
-        new_friend=User.objects.get(pk=user_id)
-        Friend.remove_friend(request.user, new_friend)
-
-        return render(request, "share/dashboard.html", {"error":"Unfollowed User"})
+# def add_friends(request, pk):
+#     if request.method == "POST":
+#         current_user = request.user
+#         if not user.is_authenticated:
+#             return redirect("share:login", {"user":user, "error":"Please Login"})
+#
+#         friend=User.objects.get(pk=user_id)
+#         print("**************************testing")
+#         print(friend)
+#         Friend.add_friend(request.user, friend)
+#
+#         return render(request, "share/dashboard.html", {"error":"Following User!"})
+#
+# def remove_friends(request, pk):
+#     if request.method == "POST":
+#         current_user = request.user
+#         if not user.is_authenticated:
+#             return redirect("share:login", {"user":user, "error":"Please Login"})
+#
+#         friend=User.objects.get(pk=user_id)
+#         Friend.remove_friend(request.user, friend)
+#
+#         return render(request, "share/dashboard.html", {"error":"Unfollowed User"})

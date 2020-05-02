@@ -2,7 +2,7 @@ from django.urls import path, include
 from . import views  #import everything from views module
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.conf.urls import url
 #iserrano0
 app_name = 'share'
 urlpatterns = [
@@ -41,9 +41,9 @@ urlpatterns = [
     path('search', views.search, name='search'),
 
     #iserrano7
-    path('user/<int:user_id>/add_friends', views.add_friends, name="add_friends"),
-    path('user/<int:user_id>/remove_friends', views.remove_friends, name="remove_friends"),
-    # path(r'^connect/(?P<operation>.+)/(?P<pk>\d+)/$', views.change_friends, name='change_friends'),
+    # path('user/<int:user_id>/add_friends', views.add_friends, name="add_friends"),
+    # path('user/<int:user_id>/remove_friends', views.remove_friends, name="remove_friends"),
+    url(r'^connect/(?P<operation>.+)/(?P<pk>\d+)/$', views.change_friends, name='change_friends'),
 
     # s3Integration
     path('upload', views.upload, name='upload'),
