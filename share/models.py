@@ -54,16 +54,33 @@ class Script(models.Model):
     created = models.DateField(auto_now=True)
     updated = models.DateField(auto_now=True)
 
+
+
+
 #s3Integration
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     # current_user = instance.user.user
     return 'user_upload/user_{0}/{1}'.format(instance.user.id, filename)
 
+
+
+class Photo(models.Model):
+    def getPhoto(self):
+        if not self.photo:
+            # depending on your template
+            return "../../user_icon.png"
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    # title = models.CharField(max_length=100)
+    photo = models.ImageField(upload_to=user_directory_path, default="user_icon.png")
+
 class Profile(models.Model):
     #FK
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
-
+    icon = models.ForeignKey(Photo, on_delete=models.CASCADE, null=True)
     # icon = models.ImageField(default='default.png', upload_to=user_directory_path)
     page_name = models.CharField(max_length=50, blank=True, unique=False)
 
@@ -72,14 +89,6 @@ class Profile(models.Model):
 
     def delete_user(self):
         self.User.delete()
-
-class Photo(models.Model):
-
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    created = models.DateTimeField(auto_now_add=True)
-    # title = models.CharField(max_length=100)
-    photo = models.FileField(upload_to=user_directory_path)
 
 #iserrano4 - create Media Model
 #REMEMBER TO DO THEM ONE AT A TIME

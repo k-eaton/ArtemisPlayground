@@ -120,8 +120,25 @@ def user_profile(request, user_id):
         else:
             # user = get_object_or_404(User, user_id)
             my_posts = Post.objects.filter(user=user.id)
+            my_profile = Profile.objects.get(user=user.id)
+            print("my_profile: ", my_profile)
 
-            return render(request, "share/user_profile.html", {"my_posts":my_posts})
+            # try:
+            #     my_icon = Photo.objects.get(photo=my_profile.icon.photo)
+            # except:
+            my_icon = Photo.getPhoto(my_profile.icon)
+                # my_icon = os.stat("share/images/user_icon.png")
+            print("icon: ", my_icon)
+            # my_icon = "media/"
+
+            parameters = {
+                "user":user,
+                "my_posts":my_posts,
+                "my_profile":my_profile,
+                "my_icon":my_icon
+            }
+            return render(request, "share/user_profile.html", parameters)
+            # return render(request, "share/user_profile.html", {"my_posts":my_posts, "my_icon":my_icon})
 
 #iserrano4
 def edit_profile(request, user_id):
@@ -186,12 +203,18 @@ def update_profile(request, user_id):
             last_name = request.POST.get('last_name')
             username = request.POST.get('username')
             email = request.POST.get('email')
+            icon = request.FILES.get("icon")
             # password = request.POST['password']
+            
+            # create Photo object
+            photo = Photo.objects.create(user = user, photo = icon)
+
 
         if user_info.id == user.id:
             User.objects.filter(pk=user_id).update(first_name=first_name, last_name=last_name, username=username, email=email)
             print("I'm here")
-            Profile.objects.filter(pk=user_id).update(page_name=page_name)
+            Profile.objects.filter(pk=user_id).update(page_name=page_name, icon=photo)
+            photo.save()
             user=get_object_or_404(User, pk=user_id)
             user = request.user
             all_posts=Post.objects.all()
