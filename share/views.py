@@ -9,6 +9,7 @@ from .models import Script, Problem, Coder
 from django.contrib.auth.models import User
 
 from django.shortcuts import get_object_or_404 #iserrano4
+from django.shortcuts import get_list_or_404 #iserrano4
 from .models import Media, Post, Comment, Photo
 
 # s3Integration
@@ -119,6 +120,8 @@ def user_profile(request, user_id):
             return redirect("share:login", {"user":user, "error":"Please Login"})
         else:
             user = get_object_or_404(User, pk=user_id)
+            # my_posts = get_list_or_404(Post, user=user.id)
+
             my_posts = Post.objects.filter(user=user.id)
             my_profile = Profile.objects.get(user=user.id)
             print("my_profile: ", my_profile)
