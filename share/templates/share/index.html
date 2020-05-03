@@ -19,33 +19,99 @@
           <!--  <p> this is a test, should be on the right</p> -->
 
           <!-- insert buttons: Group-Finder & Chat -->
-          <div class="buttons">
+          <!-- <div class="buttons"> -->
 
             <!-- Group Finder Button -->
-            <button class="button is-warning is-light is-outlined">
+            <!-- <button class="button is-warning is-light is-outlined">
                <span class="is-outlined">
                  <i class="fab fa-Group Finder"></i>
                </span>
                <span>Group Finder</span>
-             </button>
+             </button> -->
 
              <br>
 
              <!-- Chat Button -->
-            <button class="button is-warning is-light is-outlined">
+            <!-- <button class="button is-warning is-light is-outlined">
               <span>Chat</span>
-            </button>
+            </button> -->
 
-          </div>
+          <!-- </div> -->
 
         </div>
         <!-- end chat section -->
 
         <!-- beginning of main feed section -->
         <div class="column2">
-          <p> an idea for index is that you will instead be shown all media that is trending </p>
-          <p> dashboard can be media that is submitted by users you follow </p>
-          <p> please click on dashboard to see the full wire frame </p>
+          <h1> Welcome! Please login or signup! </h1>
+          <h3> Select Focus </h3>
+          {% if random_post %}
+            <div class="notification is-warning is-light">
+              <section class="section is-paddingless-horizontal" style="padding-top:0;">
+                <div class="container">
+                  <article class="media center">
+                    <figure class="media-left">
+                      <figure class="image is-64x64">
+                        <a href="{% url 'share:user_profile' p.user.id%}"><img src="{{user.profile.icon.url}}"></a>
+                      </figure>
+                    </figure>
+                    <div class="media-content">
+                      <div class="content">
+                        <p>
+                          <strong>{{ p.user.first_name}} {{ p.user.last_name }}</strong>
+                          <a style="text-decoration:none" href="{% url 'share:user_profile' p.user.id%}">@{{ p.user.username }}</a><br>
+                          <span class="has-text-grey"><time datetime="{{ p.post_created }}">{{ p.post_created }}</time></span>
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </section>
+              <!-- Username info -->
+              <!-- for posts with only text-->
+              {% if not p.post_header and not p.photo %}
+                <div class="content">
+                  <a href="{% url 'share:show_post' p.id %}">
+                    <p>{{ p.post_body }}</p>
+                  </a>
+                </div>
+
+              <!-- for posts with only photos-->
+              {% elif not p.post_header and not p.post_body %}
+                <div class="content">
+                    <figure class="image is-square">
+                      <a href="{% url 'share:show_post' p.id %}">
+                        <img src="{{ p.photo }}">
+                      </a>
+                    </figure>
+                </div>
+
+              <!-- for posts with only headers -->
+              {% elif not p.post_body and not p.photo %}
+                <div class="content">
+                  <a href="{% url 'share:show_post' p.id %}">
+                    <h1 class="title is-size-3">{{ p.post_header }}</h1>
+                  </a>
+                </div>
+
+              <!--for regular posts -->
+              {% else %}
+                <div class="content">
+                    <figure class="image is-square">
+                      <a href="{% url 'share:show_post' p.id %}">
+                        <img src="{{ p.photo }}">
+                      </a>
+                    </figure>
+                    <a href="{% url 'share:show_post' p.id %}">
+                      <h1 class="title is-size-3">{{ p.post_header }}</h1>
+                    </a>
+                    <p style="font-size:120%;">{{ p.post_body }}</p>
+                </div>
+
+              {% endif %}
+            </div>
+          {% endif %}
+
         </div>
         <!-- end main feed section -->
 
@@ -54,12 +120,12 @@
           {% load static %}
           <!-- <p> this is a test, should be on the right </p> -->
           <!-- the idea hear is to show an image that is trending/has the highest amount of reblogs/likes/upvotes etc...-->
-          <figure class="image is-primary is-256x256">
-            <img src="{% static 'media/diablo.jpg' %}"/>
+          <!-- <figure class="image is-primary is-256x256">
+            <img src="{% static 'media/diablo.jpg' %}"/> -->
             <!-- <img src="https://artemisplayground.s3.us-east-2.amazonaws.com/static/diablo.jpg" alt="diablo"> -->
             <!-- <img src="{{ obj1.photo.url }}"> -->
 
-            <br>
+            <!-- <br>
             <h2 style="color:#996633"; class="title is-4"> Diablo 3 Fan Art </h2>
             <div class="tags are-normal">
               <span class="tag is-warning is-light">#Diablo</span>
@@ -67,8 +133,8 @@
               <span class="tag is-warning is-light">#Diablo 3</span>
               <span class="tag is-warning is-light">#D3</span>
             </div>
-          </figure>
-          <br>
+          </figure> -->
+          <!-- <br>
           <br>
           <h1 style="color:#cc0000"; class="title is-4"> Trending </h1>
           <div class="tags are-large">
@@ -77,7 +143,7 @@
             <span class="tag is-danger is-light">Skyrim</span>
             <span class="tag is-danger is-light">Overwatch</span>
           </div>
-        </div>
+        </div> -->
         <!-- end trending section -->
 
       </div>

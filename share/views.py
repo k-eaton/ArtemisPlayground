@@ -18,9 +18,8 @@ from .forms import *
 from django.conf import settings
 
 # from django.core.files.storage import FileSystemStorage
-from django.template import RequestContext, Template
-from custom_storages import MediaStorage
-from .forms import UserUpdateForm, ProfileUpdateForm
+from django.template import loader
+import random
 
 
 # Create your views here.
@@ -29,10 +28,14 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            user = request.user
-            all_posts = Post.objects.all()   # all_posts is a list object [   ]
 
-            return render(request, "share/dashboard.html")
+            random_idx = random.randint(0, Post.objects.count()-1)
+            random_post = Post.objects.all()[random_idx]
+
+
+            # all_posts = Post.objects.all()   # all_posts is a list object [   ]
+
+            return render(request, "share/index.html", {"random_post":random_post})
 
         else:
             return redirect("share:login")
@@ -104,36 +107,47 @@ def logout_view(request):
 #iserrano3
 def dashboard(request):
     if request.method == "GET":
-        user = request.user
-        if not user.is_authenticated:
-            return redirect("share:login", {"user":user, "error":"Please Login"})
-        else:
-            # my_posts = Post.objects.filter(coder=user.coder.id)
+        if request.user.is_authenticated:
 
-            # return render(request, "share/dashboard.html",{"my_posts":my_posts})
-            return render(request, "share/dashboard.html")
+            latest_post_list = Post.objects.order_by('post_created')[::-1]
+            template = loader.get_template('share/dashboard.html')
+            context = {
+                'latest_post_list':latest_post_list
+            }
+
+            return render(request, "share/dashboard.html", context)
+            #the line below is another way or writing the return statement
+            # return HttpResponse(template.render(content, request))
+
+        else:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+    else:
+        return HttpResponse(status=500)
+
+
 
 def user_profile(request, user_id):
     if request.method == "GET":
         # user = request.user
-        # if not user.is_authenticated:
+        if request.user.is_authenticated:
         #     return redirect("share:login", {"user":user, "error":"Please Login"})
         # else:
-        # user = get_object_or_404(User, user_id)
-        user = get_object_or_404(User, pk=user_id)
-        my_posts = Post.objects.filter(user=user.id)
-        my_profile = Profile.objects.get(user=user.id)
-        friend = Friend.objects.get_or_create(current_user=request.user)
-        friends = Friend.objects.all()
+            user = get_object_or_404(User, pk=user_id)
+            my_posts = Post.objects.filter(user=user.id)
+            my_profile = Profile.objects.get(user=user.id)
+            friend = Friend.objects.get_or_create(current_user=request.user)
+            friends = Friend.objects.all()
+            template = loader.get_template('share/user_profile.html')
+            args = {
+                "user":user,
+                "my_posts":my_posts,
+                "my_profile":my_profile,
+                "friend":friend,
+                "friends":friends
+            }
 
-        args = {
-            "user":user,
-            "my_posts":my_posts,
-            "my_profile":my_profile,
-            "friends":friends
-        }
-
-        return render(request, "share/user_profile.html", {"my_posts":my_posts})
+            # return render(request, "share/user_profile.html", args)
+            return render(request, "share/user_profile.html", {"my_posts":my_posts})
 
 #iserrano4
 def edit_profile(request, user_id):
@@ -456,7 +470,7 @@ def search(request):
         posts = Post.objects.filter(post_header__icontains=query) | Post.objects.filter(post_body__icontains=query)
         profiles = Profile.objects.filter(page_name__icontains=query)
         users = User.objects.filter(username__icontains=query) | User.objects.filter(first_name__icontains=query) | User.objects.filter(last_name__icontains=query)
-        return render(request, "share/search_posts.html", {"user":user, "posts":posts})
+        return render(request, "share/search_posts.html", {"user":user, "posts":posts, "profiles":profiles, "users":users})
 
     else:
         return HttpResponse(status=500)

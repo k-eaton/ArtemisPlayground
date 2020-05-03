@@ -4,6 +4,7 @@ from django.utils import timezone
 import uuid
 from django.db.models.fields import DateTimeField
 from datetime import datetime
+from django_random_queryset import RandomManager
 
 #attempt hashtags later:
 #https://stream-blog.netlify.app/build-a-scalable-twitter-clone-with-django-and-stream/#hashtags-feeds
@@ -128,6 +129,7 @@ class Post(models.Model):
     post_created = DateTimeField(auto_now_add=True)
     post_updated = DateTimeField(auto_now=True)
 
+    objects = RandomManager()
     # #attemping to incorporate parse_hastags
     # tags = []
     # for hastag in self.parse_hastags():
@@ -141,15 +143,15 @@ class Comment(models.Model):
         return self.comment_body
 
     #FK
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     comment_created = DateTimeField(auto_now_add=True)
     comment_updated = DateTimeField(auto_now=True)
     comment_body = models.TextField(max_length=200, unique=False, blank=False)
 
-    class Meta:
-        unique_together = (('user', 'post'),)
+    # class Meta:
+    #     unique_together = (('user', 'post'),)
 
 
 #iserrano4 - attempt to create Hastag Model

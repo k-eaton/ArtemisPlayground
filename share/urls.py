@@ -17,11 +17,6 @@ urlpatterns = [
     #iserrano2
     #dashboard & publish_problem
     path("dashboard", views.dashboard, name='dashboard'),
-    #iserrano3
-    # path('problem/<int:problem_id>/show_my_problem', views.show_my_problem, name='show_my_problem'),
-    # path('script/<int:script_id>/show_my_script', views.show_my_script, name='show_my_script'),
-    # path('problem/<int:problem_id>/show_problem', views.show_problem, name='show_problem'),
-    # path('script/<int:script_id>/show_script', views.show_script, name='show_script'),
 
     #iserrano4
     path('user/<int:user_id>/edit_profile', views.edit_profile, name='edit_profile'),
@@ -36,7 +31,7 @@ urlpatterns = [
     #iserrano6
     path('user/<int:user_id>/user_profile', views.user_profile, name="user_profile"),
     path('post/<int:post_id>/show_post', views.show_post, name='show_post'),
-    path('comment/<int:post_id>/create_comment', views.create_comment, name="create_comment"),
+    path('post/<int:post_id>/create_comment', views.create_comment, name="create_comment"),
     path('comment/<int:comment_id>/delete_comment', views.delete_comment, name="delete_comment"),
     path('search', views.search, name='search'),
 
