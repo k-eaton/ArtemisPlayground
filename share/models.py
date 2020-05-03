@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import uuid
 from django.db.models.fields import DateTimeField
+import os
+from django.conf import settings
+
 #attempt hashtags later:
 #https://stream-blog.netlify.app/build-a-scalable-twitter-clone-with-django-and-stream/#hashtags-feeds
 # from django.template.defaultfilters import slugify
@@ -66,16 +69,19 @@ def user_directory_path(instance, filename):
 
 
 class Photo(models.Model):
-    def getPhoto(self):
-        if not self.photo:
-            # depending on your template
-            return "../../user_icon.png"
+    # def getPhoto(self):
+    #     if not self:
+    #         # depending on your template
+    #         print("Model: Photo.getPhoto(): did not have a photo: ", settings.STATIC_URL)
+    #         return settings.STATIC_URL + 'share/images/user_icon.png'
+            # return os.fspath()
+            # return "user_icon.png"
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     created = models.DateTimeField(auto_now_add=True)
     # title = models.CharField(max_length=100)
-    photo = models.ImageField(upload_to=user_directory_path, default="user_icon.png")
+    photo = models.ImageField(upload_to=user_directory_path)
 
 class Profile(models.Model):
     #FK
