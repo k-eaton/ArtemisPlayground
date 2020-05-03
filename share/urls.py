@@ -45,9 +45,6 @@ urlpatterns = [
     # path('user/<int:user_id>/add_friends', views.add_friends, name="add_friends"),
     # path('user/<int:user_id>/remove_friends', views.remove_friends, name="remove_friends"),
     url(r'^connect/(?P<operation>.+)/(?P<pk>\d+)/$', views.change_friends, name='change_friends'),
-
-    # s3Integration
-    path('upload', views.upload, name='upload'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
