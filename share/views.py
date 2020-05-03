@@ -10,7 +10,8 @@ from django.contrib.auth.models import User
 
 from django.shortcuts import get_object_or_404 #iserrano4
 from django.shortcuts import get_list_or_404 #iserrano4
-from .models import Media, Post, Comment, Photo
+from .models import Media, Post, Comment, Photo, Profile, Friend
+from django.template import RequestContext
 
 # s3Integration
 import os, json, boto3
@@ -18,9 +19,8 @@ from .forms import *
 from django.conf import settings
 
 # from django.core.files.storage import FileSystemStorage
-from django.template import RequestContext, Template
-from custom_storages import MediaStorage
-from .forms import UserUpdateForm, ProfileUpdateForm
+from django.template import loader
+import random
 
 
 # Create your views here.
@@ -29,10 +29,14 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            user = request.user
-            all_posts = Post.objects.all()   # all_posts is a list object [   ]
 
-            return render(request, "share/dashboard.html")
+            random_idx = random.randint(0, Post.objects.count()-1)
+            random_post = Post.objects.all()[random_idx]
+
+
+            # all_posts = Post.objects.all()   # all_posts is a list object [   ]
+
+            return render(request, "share/index.html", {"random_post":random_post})
 
         else:
             return redirect("share:login")
@@ -104,44 +108,49 @@ def logout_view(request):
 #iserrano3
 def dashboard(request):
     if request.method == "GET":
-        user = request.user
-        if not user.is_authenticated:
-            return redirect("share:login", {"user":user, "error":"Please Login"})
-        else:
-            # my_posts = Post.objects.filter(coder=user.coder.id)
+        if request.user.is_authenticated:
 
-            # return render(request, "share/dashboard.html",{"my_posts":my_posts})
-            return render(request, "share/dashboard.html")
+            latest_post_list = Post.objects.order_by('post_created')[::-1]
+            template = loader.get_template('share/dashboard.html')
+            context = {
+                'latest_post_list':latest_post_list
+            }
+
+            return render(request, "share/dashboard.html", context)
+            #the line below is another way or writing the return statement
+            # return HttpResponse(template.render(content, request))
+
+        else:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
+    else:
+        return HttpResponse(status=500)
+
+
 
 def user_profile(request, user_id):
     if request.method == "GET":
-        user = request.user
-        if not user.is_authenticated:
-            return redirect("share:login", {"user":user, "error":"Please Login"})
-        else:
+        # user = request.user
+        if request.user.is_authenticated:
+
+        # if not user.is_authenticated:
+            # return redirect("share:login", {"user":user, "error":"Please Login"})
             user = get_object_or_404(User, pk=user_id)
-            # my_posts = get_list_or_404(Post, user=user.id)
 
             my_posts = Post.objects.filter(user=user.id)
             my_profile = Profile.objects.get(user=user.id)
             print("my_profile: ", my_profile)
 
-            # try:
-            #     my_icon = Photo.objects.get(photo=my_profile.icon.photo)
-            # except:
-            # my_icon = Photo.getPhoto(my_profile.icon)
-                # my_icon = os.stat("share/images/user_icon.png")
-            # print("icon: ", my_icon)
-            # my_icon = "media/"
+            friend = Friend.objects.get_or_create(current_user=request.user)
+            friends = Friend.objects.all()
 
             parameters = {
                 "user":user,
                 "my_posts":my_posts,
-                "my_profile":my_profile
-                # "my_icon":my_icon
+                "my_profile":my_profile,
+                "friend":friend,
+                "friends":friends
             }
             return render(request, "share/user_profile.html", parameters)
-            # return render(request, "share/user_profile.html", {"my_posts":my_posts, "my_icon":my_icon})
 
 #iserrano4
 def edit_profile(request, user_id):
@@ -162,32 +171,6 @@ def edit_profile(request, user_id):
             return render(request, "share/login.html",
             {"Error": "Please login to edit profile"})
 
-
-#iserrano6
-# def update_profile(request, user_id):
-#     if request.method == "POST":
-#         user = request.user
-#         if not user.is_authenticated:
-#             return redirect("share:login", {"user":user, "error":"Please Login"})
-#
-#         u_form = UserUpdateForm(request.POST, instance=request.user)
-#         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-#
-#         if u_form.is_valid() and p_form.is_valid():
-#             u_form.save()
-#             p_form.save()
-#             return redirect('share/dashboard.html', {"user":user, "error":"Profile Settings Updated!"})
-#
-#     else:
-#         u_form = UserUpdateForm(instance=request.user)
-#         p_form = ProfileUpdateForm(instance=request.user.profile)
-#
-#     context = {
-#         'u_form':u_form,
-#         'p_form':p_form
-#     }
-#
-#     return render(request, 'share/dashboard.html', context)
 
 #iserrano4
 def update_profile(request, user_id):
@@ -407,11 +390,19 @@ def create_comment(request, post_id):
         print(comment_body)
 
         try:
-            comment = Comment.objects.create(commenter=commenter, comment_body=comment_body)
+            print("*************************Testing")
+            print("i am inside the try clause")
+            # user = models.ForeignKey(User, on_delete=models.CASCADE)
+            # post = models.ForeignKey(Post, on_delete=models.CASCADE)
+            #
+            # comment_created = DateTimeField(auto_now_add=True)
+            # comment_updated = DateTimeField(auto_now=True)
+            # comment_body = models.TextField(max_length=200, unique=False, blank=False)
+            comment = Comment.objects.create(user=commenter, post=post, comment_body=comment_body)
             comment.save()
 
             comment = Comment.objects.filter(post=post_id)
-            user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
+            user_comment = Comment.objects.filter(user=user.id).filter(post=post.id)
 
             return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment})
 
@@ -423,56 +414,28 @@ def create_comment(request, post_id):
 
 
 def delete_comment(request, comment_id):
-    if request.method == "POST":
-        user = request.user
-        if not user.is_authenticated:
-            return redirect("share:login", {"user":user, "error":"Please Login"})
-
-        comment = get_object_or_404(Comment, pk=comment.id)
-        post = get_object_or_404(Post, pk=comment.post.id)
-
-        if comment.user.id == user.id:
-            Comment.objects.get(pk=comment.id).delete()
-
-            comment = Comment.objects.filter(post=post.id)
-            user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
-            return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment})
-
-        else:
-            user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
-            return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment, "error":"Unable to delete comment at the moment!"})
-
-    else:
-        return HttpResponse(status=500)
-
-
-# s3Integration
-def upload(request):
-    if request.method == "POST" and request.FILES['myphoto']:
-        # title = request.POST['title']
-        myphoto = request.FILES['myphoto']
-        user = request.user
-
-        photo = Photo.objects.create(user = user, photo = myphoto)
-
-        # save file to AWS
-        # media_storage = MediaStorage()
-
-        uploaded_file_url = photo.photo
-
-        #save file to DB
-        photo.save()
-
-        photo_id = photo.pk
-
-        # uploaded_file_url = media_storage.url(filename)
-        return render(request, 'share/upload.html', {
-            'uploaded_file_url': uploaded_file_url,
-            'photo_id': photo_id
-        })
-
-    return render(request, 'share/upload.html')
-
+    # if request.method == "POST":
+    #     user = request.user
+    #     if not user.is_authenticated:
+    #         return redirect("share:login", {"user":user, "error":"Please Login"})
+    #
+    #     comment = get_object_or_404(Comment, pk=comment.id)
+    #     post = get_object_or_404(Post, pk=comment.post.id)
+    #
+    #     if comment.user.id == user.id:
+    #         Comment.objects.get(pk=comment.id).delete()
+    #
+    #         comment = Comment.objects.filter(post=post.id)
+    #         user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
+    #         return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment})
+    #
+    #     else:
+    #         user_comment = Comment.objects.filter(commenter=user.id).filter(post=post.id)
+    #         return render(request, "share/post.html", {"user":user, "post":post, "comments":comments, "user_comment":user_comment, "error":"Unable to delete comment at the moment!"})
+    #
+    # else:
+    #     return HttpResponse(status=500)
+    pass
 
 #iserrano6
 def search(request):
@@ -487,8 +450,42 @@ def search(request):
             return render (request, "share/search_posts.html", {"error":"There's nothing here =("})
 
         posts = Post.objects.filter(post_header__icontains=query) | Post.objects.filter(post_body__icontains=query)
-
-        return render(request, "share/search_posts.html", {"user":user, "posts":posts})
+        profiles = Profile.objects.filter(page_name__icontains=query)
+        users = User.objects.filter(username__icontains=query) | User.objects.filter(first_name__icontains=query) | User.objects.filter(last_name__icontains=query)
+        return render(request, "share/search_posts.html", {"user":user, "posts":posts, "profiles":profiles, "users":users})
 
     else:
         return HttpResponse(status=500)
+
+#iserrano7
+def change_friends(request, operation, pk):
+    friend=User.objects.get(pk=pk)
+    if operation == 'add':
+        Friend.add_friend(request.user, friend)
+    elif operation == 'remove':
+        Friend.remove_friend(request.user, friend)
+    return render(request, "share/dashboard.html", {"error":"Now following {{friend.users.username}}!"})
+
+# def add_friends(request, pk):
+#     if request.method == "POST":
+#         current_user = request.user
+#         if not user.is_authenticated:
+#             return redirect("share:login", {"user":user, "error":"Please Login"})
+#
+#         friend=User.objects.get(pk=user_id)
+#         print("**************************testing")
+#         print(friend)
+#         Friend.add_friend(request.user, friend)
+#
+#         return render(request, "share/dashboard.html", {"error":"Following User!"})
+#
+# def remove_friends(request, pk):
+#     if request.method == "POST":
+#         current_user = request.user
+#         if not user.is_authenticated:
+#             return redirect("share:login", {"user":user, "error":"Please Login"})
+#
+#         friend=User.objects.get(pk=user_id)
+#         Friend.remove_friend(request.user, friend)
+#
+#         return render(request, "share/dashboard.html", {"error":"Unfollowed User"})
