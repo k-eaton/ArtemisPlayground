@@ -3,8 +3,13 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import uuid
 from django.db.models.fields import DateTimeField
+
 import os
 from django.conf import settings
+
+from datetime import datetime
+from django_random_queryset import RandomManager
+
 
 #attempt hashtags later:
 #https://stream-blog.netlify.app/build-a-scalable-twitter-clone-with-django-and-stream/#hashtags-feeds
@@ -66,22 +71,26 @@ def user_directory_path(instance, filename):
     # current_user = instance.user.user
     return 'user_upload/user_{0}/{1}'.format(instance.user.id, filename)
 
-
-
 class Photo(models.Model):
-    # def getPhoto(self):
-    #     if not self:
-    #         # depending on your template
-    #         print("Model: Photo.getPhoto(): did not have a photo: ", settings.STATIC_URL)
-    #         return settings.STATIC_URL + 'share/images/user_icon.png'
-            # return os.fspath()
-            # return "user_icon.png"
-
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     created = models.DateTimeField(auto_now_add=True)
     # title = models.CharField(max_length=100)
     photo = models.ImageField(upload_to=user_directory_path)
+
+class Friend(models.Model):
+    users = models.ManyToManyField(User)
+    current_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner', null=True)
+
+    @classmethod
+    def add_friend(cls, current_user, new_friend):
+        friend, created = cls.objects.get_or_create(current_user=current_user)
+        friend.users.add(new_friend)
+
+    @classmethod
+    def remove_friend(cls, current_user, new_friend):
+        friend, created = cls.objects.get_or_create(current_user=current_user)
+        friend.users.remove(new_friend)
 
 class Profile(models.Model):
     #FK
@@ -91,7 +100,7 @@ class Profile(models.Model):
     page_name = models.CharField(max_length=50, blank=True, unique=False)
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return '{self.user.username} Profile'
 
     def delete_user(self):
         self.User.delete()
@@ -125,6 +134,7 @@ class Post(models.Model):
     post_created = DateTimeField(auto_now_add=True)
     post_updated = DateTimeField(auto_now=True)
 
+    objects = RandomManager()
     # #attemping to incorporate parse_hastags
     # tags = []
     # for hastag in self.parse_hastags():
@@ -138,15 +148,15 @@ class Comment(models.Model):
         return self.comment_body
 
     #FK
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     comment_created = DateTimeField(auto_now_add=True)
     comment_updated = DateTimeField(auto_now=True)
     comment_body = models.TextField(max_length=200, unique=False, blank=False)
 
-    class Meta:
-        unique_together = (('user', 'post'),)
+    # class Meta:
+    #     unique_together = (('user', 'post'),)
 
 
 #iserrano4 - attempt to create Hastag Model

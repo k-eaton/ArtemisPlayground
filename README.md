@@ -1,11 +1,15 @@
 # ArtemisPlayground
 
-#iserrano6:
-Feature: search_posts
+#iserrano7
 Feature: follow_users
 Feature: unfollow_users
 Feature: update dashboard
 Feature: messaging
+Troubleshooting commenting
+Modifying dashboard
+
+#iserrano6:
+Feature: search_posts
 Troubleshooting update/delete_post and update/delete_profile
 Troubleshooting commenting
 Modifying base.html

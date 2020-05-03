@@ -23,7 +23,7 @@
             <ul>
               <li>
                 <!-- visit user page -->
-                <a class="button is-medium is-warning is-light is-outlined" href="{% url 'share:user_profile' post.user.id%}">
+                <a class="button is-medium is-warning is-light is-outlined" href="{% url 'share:user_profile' post.user_id %}">
                    <span class="is-outlined">
                        <i class="fab fa-Visit User Page"></i>
                    <span>Visit User Page</span>
@@ -139,7 +139,7 @@
             {% csrf_token %}
               <div class="field">
                 <div class="control">
-                  <textarea class="input is-warning" value="{{comment.body}}" placeholder="Write a comment ..." id="comment_body" name="comment_body">
+                  <textarea class="input is-warning" placeholder="Write a comment ..." id="comment_body" name="comment_body">
                   </textarea>
                 </div>
               </div>
