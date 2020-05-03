@@ -12,16 +12,18 @@
     <form action="{% url 'share:update_profile' user.id %}" method = "POST" enctype="multipart/form-data">
       {% csrf_token %}
 
-      <!-- <figure class="image is-64x64">
-        <img src="{{user.profile.icon.url}}">
-      </figure>
+      {% if my_profile.icon.photo %}
+        <figure class="image is-64x64">
+          <img src="{{ my_profile.icon.photo.url }}">
+        </figure>
+      {% endif %}
 
       <div class="field">
         <div class="control">
           <label class="label">Change Icon</label>
-            <input value="{{user.profile.icon.url}}" type="file" id="icon" name="icon">
+            <input type="file" id="icon" name="icon">
         </div>
-      </div> -->
+      </div>
 
         <div class = "field">
           <div class="control">

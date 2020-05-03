@@ -2,6 +2,10 @@ from django.urls import path, include
 from . import views  #import everything from views module
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import re_path
+from django.views.static import serve
+from django.contrib.staticfiles.urls import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 #iserrano0
 app_name = 'share'
@@ -42,5 +46,8 @@ urlpatterns = [
 
     # s3Integration
     path('upload', views.upload, name='upload'),
+]
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

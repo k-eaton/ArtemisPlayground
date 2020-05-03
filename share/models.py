@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import uuid
 from django.db.models.fields import DateTimeField
+import os
+from django.conf import settings
+
 #attempt hashtags later:
 #https://stream-blog.netlify.app/build-a-scalable-twitter-clone-with-django-and-stream/#hashtags-feeds
 # from django.template.defaultfilters import slugify
@@ -54,16 +57,36 @@ class Script(models.Model):
     created = models.DateField(auto_now=True)
     updated = models.DateField(auto_now=True)
 
+
+
+
 #s3Integration
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     # current_user = instance.user.user
     return 'user_upload/user_{0}/{1}'.format(instance.user.id, filename)
 
+
+
+class Photo(models.Model):
+    # def getPhoto(self):
+    #     if not self:
+    #         # depending on your template
+    #         print("Model: Photo.getPhoto(): did not have a photo: ", settings.STATIC_URL)
+    #         return settings.STATIC_URL + 'share/images/user_icon.png'
+            # return os.fspath()
+            # return "user_icon.png"
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    # title = models.CharField(max_length=100)
+    photo = models.ImageField(upload_to=user_directory_path)
+
 class Profile(models.Model):
     #FK
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
-
+    icon = models.ForeignKey(Photo, on_delete=models.CASCADE, null=True)
     # icon = models.ImageField(default='default.png', upload_to=user_directory_path)
     page_name = models.CharField(max_length=50, blank=True, unique=False)
 
@@ -72,14 +95,6 @@ class Profile(models.Model):
 
     def delete_user(self):
         self.User.delete()
-
-class Photo(models.Model):
-
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    created = models.DateTimeField(auto_now_add=True)
-    # title = models.CharField(max_length=100)
-    photo = models.FileField(upload_to=user_directory_path)
 
 #iserrano4 - create Media Model
 #REMEMBER TO DO THEM ONE AT A TIME

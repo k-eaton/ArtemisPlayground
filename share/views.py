@@ -9,6 +9,7 @@ from .models import Script, Problem, Coder
 from django.contrib.auth.models import User
 
 from django.shortcuts import get_object_or_404 #iserrano4
+from django.shortcuts import get_list_or_404 #iserrano4
 from .models import Media, Post, Comment, Photo
 
 # s3Integration
@@ -118,10 +119,29 @@ def user_profile(request, user_id):
         if not user.is_authenticated:
             return redirect("share:login", {"user":user, "error":"Please Login"})
         else:
-            # user = get_object_or_404(User, user_id)
-            my_posts = Post.objects.filter(user=user.id)
+            user = get_object_or_404(User, pk=user_id)
+            # my_posts = get_list_or_404(Post, user=user.id)
 
-            return render(request, "share/user_profile.html", {"my_posts":my_posts})
+            my_posts = Post.objects.filter(user=user.id)
+            my_profile = Profile.objects.get(user=user.id)
+            print("my_profile: ", my_profile)
+
+            # try:
+            #     my_icon = Photo.objects.get(photo=my_profile.icon.photo)
+            # except:
+            # my_icon = Photo.getPhoto(my_profile.icon)
+                # my_icon = os.stat("share/images/user_icon.png")
+            # print("icon: ", my_icon)
+            # my_icon = "media/"
+
+            parameters = {
+                "user":user,
+                "my_posts":my_posts,
+                "my_profile":my_profile
+                # "my_icon":my_icon
+            }
+            return render(request, "share/user_profile.html", parameters)
+            # return render(request, "share/user_profile.html", {"my_posts":my_posts, "my_icon":my_icon})
 
 #iserrano4
 def edit_profile(request, user_id):
@@ -132,10 +152,12 @@ def edit_profile(request, user_id):
 
         #button is pressed, retrieve user information
         user_info = get_object_or_404(User, pk=user_id)
+        my_profile = Profile.objects.get(user=user.id)
+
 
         #make sure the logged in user is the correct one
         if user_info.id == user.id:
-            return render(request, "share/edit_profile.html", {"user_info":user_info})
+            return render(request, "share/edit_profile.html", {"user_info":user_info, "my_profile":my_profile})
         else:
             return render(request, "share/login.html",
             {"Error": "Please login to edit profile"})
@@ -186,12 +208,18 @@ def update_profile(request, user_id):
             last_name = request.POST.get('last_name')
             username = request.POST.get('username')
             email = request.POST.get('email')
+            icon = request.FILES.get("icon")
             # password = request.POST['password']
+            
+            # create Photo object
+            photo = Photo.objects.create(user = user, photo = icon)
+
 
         if user_info.id == user.id:
             User.objects.filter(pk=user_id).update(first_name=first_name, last_name=last_name, username=username, email=email)
             print("I'm here")
-            Profile.objects.filter(pk=user_id).update(page_name=page_name)
+            Profile.objects.filter(pk=user_id).update(page_name=page_name, icon=photo)
+            photo.save()
             user=get_object_or_404(User, pk=user_id)
             user = request.user
             all_posts=Post.objects.all()
@@ -231,10 +259,10 @@ def show_post(request, post_id):
         else:
             post = get_object_or_404(Post, pk=post_id)
 
-            comments = Comment.objects.filter(post=post_id)
-            user_comment = Comment.objects.filter(user=user.id).filter(post=post.id)
+            # comments = Comment.objects.filter(post=post_id)
+            # user_comment = Comment.objects.filter(user=user.id).filter(post=post.id)
 
-        return render(request, "share/post.html", {"user":user, "post":post})
+        return render(request, "share/post.html", {"post":post})
 
 #iserrano4
 def publish_post(request):
