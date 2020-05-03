@@ -6,8 +6,15 @@
 <div class="tile is-ancestor has-text-centered">
   <div style="margin: auto;" class="tile is-parent">
     <div class="tile is-child box">
-      <figure class="image is-64x64">
-        <img src="{{ my_profile.icon.photo.url }}">
+
+      {% if my_profile.icon.photo %}
+        <figure class="image is-64x64">
+          <img src="{{ my_profile.icon.photo.url }}">
+        </figure>
+      {% endif %}
+
+      <!-- <figure class="image is-64x64"> -->
+        <!-- <img src="{{ my_profile.icon.photo.url }}"> -->
 
 
         <!-- <img src="{% static "share/images/user_icon.png" %}"> -->
@@ -22,13 +29,7 @@
 <div class="columns">
   <!-- beginning of section 1 -->
   <div class="column1">
-    <hr>
-    <h1 class="title is-3">&nbsp<span style="color:#1496ed">Following</span></h1>
-    {% for friend in friends %}
-      <a href="{% url 'share:user_profile' friend.user.id %}">
-        <h3>{{ friend.user.username }}</h3></a><a class="button is-warning is-small"
-        href="{% url 'share:change_friends' operation='remove' pk=friend.pk %}">Unfollow User</a>
-    {% endfor %}
+    
   </div>
   <!-- end section 1 -->
 
