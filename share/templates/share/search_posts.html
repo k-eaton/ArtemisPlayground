@@ -20,7 +20,7 @@
                       Post: {{ p.post_header }} <br>By User {{ p.user.username}}
                       {% endif %}
                       <a class="button is-warning is-small"
-                      href="{% url 'share:show_post' p.id %}">Show Post</a>
+                      href="{% url 'share:show_post' p.user.id %}">Show Post</a>
 
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     <div class="content">
                       Profile: {{ p.page_name }}
                       <a class="button is-warning is-small"
-                      href="{% url 'share:user_profile' p.id %}">Go to User Profile</a>
+                      href="{% url 'share:visit_user_page' p.id %}">Go to User Profile</a>
                     </div>
                 </div>
             {% endfor %}
@@ -39,7 +39,7 @@
                     <div class="content">
                       Users: {{ u.username }}
                       <a class="button is-warning is-small"
-                      href="{% url 'share:user_profile' u.id %}">Go to User Profile</a>
+                      href="{% url 'share:visit_user_page' u.id %}">Go to User Profile</a>
                     </div>
                 </div>
             {% endfor %}

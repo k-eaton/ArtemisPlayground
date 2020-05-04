@@ -2,16 +2,19 @@
 {% extends "share/base.html" %}
 {% block content %}
 {% load static %}
+{% if error %}
+  		<h3 class="title is-3" style="color: red">{{ error }}</h3>
+{% endif %}
 <!-- user account header -->
 <div class="tile is-ancestor has-text-centered">
   <div style="margin: auto;" class="tile is-parent">
     <div class="tile is-child box">
 
-      {% if my_profile.icon.photo %}
+      <!-- {% if my_profile.icon.photo %}
         <figure class="image is-64x64">
           <img src="{{ my_profile.icon.photo.url }}">
         </figure>
-      {% endif %}
+      {% endif %} -->
 
       <!-- <figure class="image is-64x64"> -->
         <!-- <img src="{{ my_profile.icon.photo.url }}"> -->
@@ -19,7 +22,7 @@
 
         <!-- <img src="{% static "share/images/user_icon.png" %}"> -->
 
-      </figure>
+
       <h1 class="title is-2">&nbsp<span style="color:#1496ed">{{ my_profile.page_name }}</span></h1>
     </div>
   </div>
@@ -29,7 +32,12 @@
 <div class="columns">
   <!-- beginning of section 1 -->
   <div class="column1">
-    
+    <hr>
+    <h1 class="title is-3"><span style="color:#1496ed">Following</span></h1>
+    {% for friend in friends %}
+      <a href="{% url 'share:visit_user_page' friend.id %}">
+        <h2>{{ friend.username }}</h2></a>
+    {% endfor %}
   </div>
   <!-- end section 1 -->
 
@@ -62,7 +70,7 @@
           </article>
         </div>
       </section>
-    </div>
+
       <!-- Username info -->
 
       <div class="content">
@@ -82,6 +90,7 @@
           <p style="font-size:120%;">{{ p.post_body }}</p>
         {% endif %}
       </div>
+      </div>
     {% endfor %}
     <!-- end of section 2 -->
 
@@ -93,7 +102,8 @@
       <div class="buttons">
         <ul>
           <li>
-            <a href="{% url 'share:change_friends' operation='add' pk=user.pk %}">
+            {% if not user in friends %}
+            <a href="{% url 'share:change_friends' operation='add' pk=user.id %}">
             <button class="button is-medium is-warning is-light is-outlined">
               <span class="is-outlined">
                   <i class="fab fa-Follow Me"></i>
@@ -101,6 +111,16 @@
               <span>Follow Me!</span>
             </button>
             </a>
+            {% else %}
+            <a href="{% url 'share:change_friends' operation='remove' pk=user.id %}">
+            <button class="button is-medium is-warning is-light is-outlined">
+              <span class="is-outlined">
+                  <i class="fab fa-Unfollow"></i>
+              </span>
+              <span>Unfollow</span>
+            </button>
+            </a>
+            {% endif %}
           </li>
 
           <li>

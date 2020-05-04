@@ -11,6 +11,7 @@
 </head>
 
 <body>
+
 <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand is-dark">
         <a class="navbar-item" href="/">
@@ -85,7 +86,7 @@
                          <a class="navbar-item" href="{% url 'share:edit_profile' user.id %}">Settings</a>
                        </li>
                        <li>
-                         <a class="navbar-item" href="{% url 'share:logout' %}">Logout {{user.username}}</a>
+                         <a class="navbar-item" href="{% url 'share:logout' %}">Logout</a>
                        </li>
                       </ul>
                      {% endif %}
