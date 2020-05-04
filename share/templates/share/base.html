@@ -11,11 +11,12 @@
 </head>
 
 <body>
-<nav class="navbar is-warning" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="{% url 'share:dashboard' %}">
-            <img src="{% static 'share/images/bow_06_t.PNG' %}" alt=" icon">
-            <h1 class="title is-size-4" style="font-family: sans-serif,times"> Artemis's Playground </h1>
+
+<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand is-dark">
+        <a class="navbar-item" href="/">
+            <img src="{% static 'share/images/icon5.png' %}" alt="icon">
+            <h1 class="title is-size-4 has-text-light" style="font-family: sans-serif, times; padding-left: 20px;"> Artemis's Playground </h1>
         </a>
 
 
@@ -56,7 +57,7 @@
            <!-- End Search bar addon -->
            <a class="navbar-item" href="{% url 'share:dashboard' %}">
              <span class="icon">
-               <i class="fas fa-home"></i>
+               <i class="fas fa-home has-text-light"></i>
           </a>
            <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
