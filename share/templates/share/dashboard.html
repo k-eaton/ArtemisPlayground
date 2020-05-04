@@ -52,13 +52,13 @@
           {% if latest_post_list %}
             {% for p in latest_post_list %}
             <!-- user info -->
-            <div class="notification is-warning is-light">
-              <section class="section is-paddingless-horizontal" style="padding-top:0;">
+            <div class="notification is-dark">
+              <section class="section is-paddingless-horizontal is-paddingless-vertical" style="padding-top:0;">
                 <div class="container">
                   <article class="media center">
                     <figure class="media-left">
                       <figure class="image is-64x64">
-                        <a href="{% url 'share:user_profile' p.user.id%}"><img src="{{user.profile.icon.url}}"></a>
+                        <a href="{% url 'share:user_profile' p.user.id%}"><img src="{{user.profile.icon.photo.url}}"></a>
                       </figure>
                     </figure>
                     <div class="media-content">
@@ -74,46 +74,21 @@
                 </div>
               </section>
               <!-- Username info -->
-              <!-- for posts with only text-->
-              {% if not p.post_header and not p.photo %}
-                <div class="content">
+              <div class="content">
+              {% if p.photo.photo %}
+                <figure class="image">
                   <a href="{% url 'share:show_post' p.id %}">
-                    <p>{{ p.post_body }}</p>
+                    <img src="{{ p.photo.photo.url }}">
                   </a>
-                </div>
-
-              <!-- for posts with only photos-->
-              {% elif not p.post_header and not p.post_body %}
-                <div class="content">
-                    <figure class="image is-square">
-                      <a href="{% url 'share:show_post' p.id %}">
-                        <img src="{{ p.photo }}">
-                      </a>
-                    </figure>
-                </div>
-
-              <!-- for posts with only headers -->
-              {% elif not p.post_body and not p.photo %}
-                <div class="content">
-                  <a href="{% url 'share:show_post' p.id %}">
-                    <h1 class="title is-size-3">{{ p.post_header }}</h1>
-                  </a>
-                </div>
-
-              <!--for regular posts -->
-              {% else %}
-                <div class="content">
-                    <figure class="image is-square">
-                      <a href="{% url 'share:show_post' p.id %}">
-                        <img src="{{ p.photo }}">
-                      </a>
-                    </figure>
-                    <a href="{% url 'share:show_post' p.id %}">
-                      <h1 class="title is-size-3">{{ p.post_header }}</h1>
-                    </a>
-                    <p style="font-size:120%;">{{ p.post_body }}</p>
-                </div>
-
+                </figure>
+              {% endif %}
+              {% if p.post_header %}
+                <a href="{% url 'share:show_post' p.id %}">
+                  <h1 class="title is-size-3">{{ p.post_header }}</h1>
+                </a>
+              {% endif %}
+              {% if p.post_body %}
+                <p style="font-size:120%;">{{ p.post_body }}</p>
               {% endif %}
             </div>
             {% endfor %}
