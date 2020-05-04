@@ -4,10 +4,10 @@
 
 {% if error %}
   		<h3 class="title is-3" style="color: red">{{ error }}</h3>
-{% endif %}
+{% endif %}<!-- 
 <link rel="stylesheet" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\bulma-0.8.0\css\bulma.min.css">
 <script defer src="https://use.fontawesome.com/releases/v5.0.6/css/all.css"></script>
-<link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css">
+<link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css"> -->
 
 <style>
   /* .center {
@@ -31,9 +31,10 @@
 
         <!-- beginning of main feed section -->
         <div class="column2">
-          <hr>
-          {% if latest_post_list %}
+          <h1>Where the posts go!</h1>
+          <!-- {% if latest_post_list %} -->
           {% for p in latest_post_list %}
+            <h1>A post!</h1>
             <!-- user info -->
             <div class="notification is-dark">
             <section class="section is-paddingless-horizontal" style="padding-top:0;">
@@ -42,7 +43,7 @@
                   <figure class="media-left">
                     <figure class="image is-64x64">
                       <a href="{% url 'share:visit_user_page' p.user.id %}">
-                        <img src="{{ my_profile.icon.photo.url }}">
+                        <img src="{{ p.user.profile.icon.photo.url }}">
                       </a>
                     </figure>
                   </figure>
@@ -80,7 +81,7 @@
             </div>
             </div>
           {% endfor %}
-          {% endif %}
+          <!-- {% endif %} -->
         <!-- end main feed section -->
 
         <!-- beginning trending section -->

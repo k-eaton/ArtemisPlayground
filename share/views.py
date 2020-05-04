@@ -13,6 +13,9 @@ from django.shortcuts import get_list_or_404 #iserrano4
 from .models import Media, Post, Comment, Photo, Profile, Friend
 from django.template import RequestContext
 
+# helper methods
+from .utils import get_date_stamp
+
 # s3Integration
 import os, json, boto3
 from .forms import *
@@ -110,24 +113,67 @@ def dashboard(request):
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
         else:
+            try:
+                friend = Friend.objects.get(current_user=user.id)
+            except:
+                friend = False;
+            if friend:
+                # friends = friend.users.filter(user=user.id)
+                latest_post_list = []
+                friends = []
+                friends.extend(friend.users.all())
+                print("friends in dashboard: ", friends)
+                
+                post_list = []
+                latest_post_list = []
 
-            friend = Friend.objects.get(current_user=user.id)
-            friends = friend.users.all()
+                # flips out if friends list is shorter than 2
+                # for multiple friends:
 
-            post_list = Post.objects.filter(friends)
-            latest_post_list=post_list.order_by('post_created')[::-1]
-            template = loader.get_template('share/dashboard.html')
+                if len(friends) > 1:
+                    for frien in friends:
+                        posts = Post.objects.get(frien)
 
-            # latest_post_list=Post.objects.order_by('post_created')[::-1]
-            # template = loader.get_template('share/dashboard.html')
+                        # again flips out if array shorter than 2
+                        if len(posts) > 1:
+                            post_list.extend(posts)
 
-            context = {
-                'latest_post_list':latest_post_list
-            }
+                        # if only one post
+                        else:
+                            post_list.add(posts)
+                    print("post_list in dashboard: ", post_list)
 
-            return render(request, "share/dashboard.html", context)
-            #the line below is another way or writing the return statement
-            # return HttpResponse(template.render(content, request))
+                # if one friend
+                else:
+                    posts = Post.objects.filter(user=friends.pop(0).id)
+                    # posts = friends.pop.posts.all()
+
+                    # again flips out if array shorter than 2
+                    if len(posts) > 1:
+                        post_list.extend(posts)
+                        # latest_post_list=post_list.sort(key=get_date_stamp) #[::-1]
+                        latest_post_list = sorted(post_list, key=lambda x: x.post_created, reverse=True)
+
+                    # if only one post
+                    else:
+                        latest_post_list = posts
+                    print("Fewer than 2 friends in dashboard")
+                # latest_post_list=post_list.order_by('post_created')[::-1]
+                # template = loader.get_template('share/dashboard.html')
+
+                # latest_post_list=Post.objects.order_by('post_created')[::-1]
+                # template = loader.get_template('share/dashboard.html')
+
+                parameters = {
+                    # 'post_list':post_list,
+                    'latest_post_list':latest_post_list
+                }
+
+                return render(request, "share/dashboard.html", parameters)
+                #the line below is another way or writing the return statement
+                # return HttpResponse(template.render(content, request))
+            else:
+                return redirect("share:index")
 
     else:
         return HttpResponse(status=500)
@@ -145,31 +191,33 @@ def user_profile(request, user_id):
         my_profile = Profile.objects.get(user=user.id)
         print("my_profile: ", my_profile)
 
-        friend, created = Friend.objects.get_or_create(current_user=user.id)
-        friends = friend.users.all()
+        # friend, created = Friend.objects.get_or_create(current_user=user.id)
+        # friends = friend.users.all()
 
         parameters = {
             "user_page":user_page,
             "my_posts":my_posts,
             "my_profile":my_profile,
-            "friends":friends,
+            # "friends":friends,
         }
         return render(request, "share/user_profile.html", parameters)
 
 def visit_user_page(request, user_id):
     if request.method=="GET":
         user = get_object_or_404(User, pk=user_id)
-        user_posts = Post.objects.get(user=user.id)
-        user_profile = Profile.objects.get(user=user.id)
-        user_friends = Friend.objects.filter(current_user=user.id)
+        # user_posts = Post.objects.get(user=user.id)
+        # user_profile = Profile.objects.get(user=user.id)
+        # user_friends = Friend.objects.filter(current_user=user.id)
 
         parameters = {
             "user":user,
-            "user_posts":user_posts,
-            "user_profile":user_profile,
-            "user_friends":user_friends,
+            # "user_posts":user_posts,
+            # "user_profile":user_profile,
+            # "user_friends":user_friends,
         }
-        return render(request, "share/user_profile.html", parameters)
+        return redirect("share:user_profile", user.id)
+
+        # return render(request, "share/user_profile.html", parameters)
 
 #iserrano4
 def edit_profile(request, user_id):
@@ -185,6 +233,7 @@ def edit_profile(request, user_id):
 
         #make sure the logged in user is the correct one
         if user_info.id == user.id:
+
             return render(request, "share/edit_profile.html", {"user_info":user_info, "my_profile":my_profile})
         else:
             return render(request, "share/login.html",
@@ -225,7 +274,9 @@ def update_profile(request, user_id):
             user=get_object_or_404(User, pk=user_id)
             user = request.user
             all_posts=Post.objects.all()
-            return render(request, "share/user_profile.html", {"user":user, "all_posts":all_posts, "error":"Profile Updated!"})
+            return redirect("share:user_profile", user.id)
+
+            # return render(request, "share/user_profile.html", {"user":user, "all_posts":all_posts, "error":"Profile Updated!"})
         else:
             return render(request, "share/edit_profile.html", {"error":"Unable to update profile"})
 
