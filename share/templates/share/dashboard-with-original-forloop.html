@@ -48,43 +48,85 @@
 
         <!-- beginning of main feed section -->
         <div class="column2">
-          <!-- <p> this is a test, should be in the middle </p> -->
-
-          <div class="notification is-warning">
-            <figure class="image is-square">
-              <img src="static\share\images\Hollow_Knight.png" alt="Hollow_Knight">
-            </figure>
-            <br>
-            <article class="media notification is-warning">
-              <figure class="media-left">
-                <span class="image is-64x64">
-                  <img src="static\share\images\user.png" >
-                </span>
-              </figure>
-              <div class="media-content">
-                <div class="content">
-                  <a>
-                    <h1 class="title is-size-4"> Username </h1>
-                  </a>
-                  <p class="subtitle is-size-6">
-                    Sprite models from the game <span class="tag is-warning is-light">#Hollow Knight</span>
-                  </p>
+          <hr>
+          {% if latest_post_list %}
+            {% for p in latest_post_list %}
+            <!-- user info -->
+            <div class="notification is-warning is-light">
+              <section class="section is-paddingless-horizontal" style="padding-top:0;">
+                <div class="container">
+                  <article class="media center">
+                    <figure class="media-left">
+                      <figure class="image is-64x64">
+                        <a href="{% url 'share:user_profile' p.user.id%}"><img src="{{user.profile.icon.url}}"></a>
+                      </figure>
+                    </figure>
+                    <div class="media-content">
+                      <div class="content">
+                        <p>
+                          <strong>{{ p.user.first_name}} {{ p.user.last_name }}</strong>
+                          <a style="text-decoration:none" href="{% url 'share:user_profile' p.user.id%}">@{{ p.user.username }}</a><br>
+                          <span class="has-text-grey"><time datetime="{{ p.post_created }}">{{ p.post_created }}</time></span>
+                        </p>
+                      </div>
+                    </div>
+                  </article>
                 </div>
-              </div>
-            </article>
+              </section>
+              <!-- Username info -->
+              <!-- for posts with only text-->
+              {% if not p.post_header and not p.photo %}
+                <div class="content">
+                  <a href="{% url 'share:show_post' p.id %}">
+                    <p>{{ p.post_body }}</p>
+                  </a>
+                </div>
 
-          </div>
+              <!-- for posts with only photos-->
+              {% elif not p.post_header and not p.post_body %}
+                <div class="content">
+                    <figure class="image is-square">
+                      <a href="{% url 'share:show_post' p.id %}">
+                        <img src="{{ p.photo }}">
+                      </a>
+                    </figure>
+                </div>
 
-        </div>
+              <!-- for posts with only headers -->
+              {% elif not p.post_body and not p.photo %}
+                <div class="content">
+                  <a href="{% url 'share:show_post' p.id %}">
+                    <h1 class="title is-size-3">{{ p.post_header }}</h1>
+                  </a>
+                </div>
+
+              <!--for regular posts -->
+              {% else %}
+                <div class="content">
+                    <figure class="image is-square">
+                      <a href="{% url 'share:show_post' p.id %}">
+                        <img src="{{ p.photo }}">
+                      </a>
+                    </figure>
+                    <a href="{% url 'share:show_post' p.id %}">
+                      <h1 class="title is-size-3">{{ p.post_header }}</h1>
+                    </a>
+                    <p style="font-size:120%;">{{ p.post_body }}</p>
+                </div>
+
+              {% endif %}
+            </div>
+            {% endfor %}
+          {% endif %}
         <!-- end main feed section -->
 
         <!-- beginning trending section -->
         <div class="column3">
           <!-- <p> this is a test, should be on the right </p> -->
           <!-- the idea hear is to show an image that is trending/has the highest amount of reblogs/likes/upvotes etc...-->
-          <figure class="image is-primary is-256x256">
+          <!-- <figure class="image is-primary is-256x256">
             <img src="static\share\images\diablo.jpeg" alt="diablo">
-            
+
             <br>
             <h2 style="color:#996633"; class="title is-4"> Diablo 3 Fan Art </h2>
             <div class="tags are-normal">
@@ -102,7 +144,7 @@
             <span class="tag is-danger is-light">Unity</span>
             <span class="tag is-danger is-light">Skyrim</span>
             <span class="tag is-danger is-light">Overwatch</span>
-          </div>
+          </div> -->
         </div>
         <!-- end trending section -->
 

@@ -1,16 +1,18 @@
 <!-- list problems and scripts that belong to this coder -->
 {% extends "share/base.html" %}
 {% block content %}
-
+{% if error %}
+<h3 class="title is-3" style="color: red">{{ error }}</h3>
+{% endif %}
 <link rel="stylesheet" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\bulma-0.8.0\css\bulma.min.css">
 <script defer src="https://use.fontawesome.com/releases/v5.0.6/css/all.css"></script>
 <link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css">
 <head>
-<style>
-  a {
-    text-decoration: none;
-  }
-</style>
+  <style>
+    a {
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
   <section class="index">
@@ -23,110 +25,75 @@
             <ul>
               <li>
                 <!-- visit user page -->
-                <a class="button is-medium is-warning is-light is-outlined" href="{% url 'share:user_profile' post.user_id %}">
-                   <span class="is-outlined">
-                       <i class="fab fa-Visit User Page"></i>
-                   <span>Visit User Page</span>
-                 </a>
-              </li>
-              <li>
-                 <!-- reblog -->
-                <a class="button is-medium is-warning is-light is-outlined">
+                <a class="button is-medium is-warning is-light is-outlined" href="{% url 'share:user_profile' post.user.id %}">
                   <span class="is-outlined">
-                    <i class="fab fa-Reblog"></i>
-                  </span>
-                  <span>Reblog Post</span>
-                </a>
-              </li>
-            </ul>
+                    <i class="fab fa-Visit User Page"></i>
+                    <span>Visit User Page</span>
+                  </a>
+                </li>
+                <li>
+                  <!-- reblog -->
+                  <a class="button is-medium is-warning is-light is-outlined">
+                    <span class="is-outlined">
+                      <i class="fab fa-Reblog"></i>
+                    </span>
+                    <span>Reblog Post</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
           </div>
+          <!-- end chat section -->
 
-        </div>
-        <!-- end chat section -->
+          <!-- beginning of main feed section -->
+          <div class="column2">
+            <div class="notification is-warning">
+              <!-- user icon section -->
+              <div class="notification is-warning is-light">
+                <section class="section is-paddingless-horizontal" style="padding-top:0;">
+                  <div class="container">
+                    <article class="media center">
+                      <figure class="media-left">
+                        <figure class="image is-64x64">
+                          <a href="{% url 'share:visit_user_page' post.user.id %}">
+                            <img src="{{ my_profile.icon.photo.url }}">
+                          </a>
+                        </figure>
+                      </figure>
+                      <div class="media-content">
+                        <div class="content">
+                          <p>
+                            <strong>{{ post.user.first_name}} {{ post.user.last_name }}</strong>
+                            <a style="text-decoration:none" href="{% url 'share:visit_user_page' post.user.id %}">@{{ post.user.username }}</a><br>
+                            <span class="has-text-grey"><time datetime="{{ post.post_created }}">{{ post.post_created }}</time></span>
+                          </p>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+                </section>
 
-        <!-- beginning of main feed section -->
-        <div class="column2">
+                <!-- Username info -->
 
-          {% if error %}
-            <h3 class="title is-3" style="color: red">{{ error }}</h3>
-          {% endif %}
-
-          <div class="notification is-warning">
-<!-- user icon section -->
-            <section class="section is-paddingless-horizontal" style="padding-top:0; padding-bottom:0;">
-              <div class="container">
-                <article class="media center">
-                  <figure class="media-left">
-                    <figure class="image is-64x64">
-                      <a href="{% url 'share:user_profile' post.user%}"><img src="user icon"></a>
-                    </figure>
+                <div class="content">
+                  {% if post.photo.photo %}
+                  <figure class="image">
+                    <a href="{% url 'share:show_post' post.id %}">
+                      <img src="{{ post.photo.photo.url }}">
+                    </a>
                   </figure>
-                  <div class="media-content">
-                    <div class="content">
-                      <p>
-                        <strong>{{ post.user.first_name}} {{ post.user.last_name }}</strong>
-                        <a style="text-decoration:none" href="{% url 'share:user_profile' post.user.id%}">@{{ post.user.username }}</a><br>
-                        <span class="has-text-grey"><time datetime="{{ post.post_created }}">{{ post.post_created }}</time></span>
-                      </p>
-                    </div>
-                  </div>
-                </article>
+                  {% endif %}
+                  {% if post.post_header %}
+                  <a href="{% url 'share:show_post' post.id %}">
+                    <h1 class="title is-size-3">{{ post.post_header }}</h1>
+                  </a>
+                  {% endif %}
+                  {% if post.post_body %}
+                  <p style="font-size:120%;">{{ post.post_body }}</p>
+                  {% endif %}
+                </div>
               </div>
-            </section>
-            <div class = "content">
-              <article class="media notification is-warning">
-                <!-- post header and body -->
-                <!-- for posts with only text-->
-                {% if not post.post_header and not post.photo %}
-                  <div class="content">
-                      <p>{{ post.post_body }}</p>
-                  </div>
-
-                <!-- for posts with only photos-->
-                {% elif not post.post_header and not post.post_body %}
-                  <div class="content">
-                      <figure class="image is-square">
-                          <img src="{{ post.photo }}">
-                      </figure>
-                  </div>
-
-                <!-- for posts with only headers -->
-                {% elif not post.post_body and not post.photo %}
-                  <div class="content">
-                      <h1 class="title is-size-3">{{ post.post_header }}</h1>
-                  </div>
-
-                <!--for regular posts -->
-                {% else %}
-                  <div class="content">
-                      <figure class="image is-square">
-                          <img src="{{ post.photo }}">
-                      </figure>
-                      <h1 class="title is-size-3">{{ post.post_header }}</h1>
-                      <p style="font-size:120%;">{{ post.post_body }}</p>
-                  </div>
-
-                {% endif %}
-
-                <!-- comment button, repost, like -->
-                <!-- <nav class="level is-mobile">
-                  <div class="level-left">
-                    <a class="level-item">
-                      <span class="icon is-small"><i class="fas fa-comment"></i></span>
-                    </a>
-                    <a>
-                      <span class="icon is-small"><i class="fas fa-retweet"></i></span>
-                    </a>
-                    <a>
-                      <span class="icon is-small"><i class="fas fa-heart"></i></span>
-                    </a>
-                  </div>
-                </nav> -->
-              </div>
-              <!-- edit post option -->
-              {% if user.id == post.user.id %}
-                <a class = "button is-warning is-light is-outlined is-medium" href="{% url 'share:edit_post' post.id %}"> Edit Post </a>
-              {% endif %}
             </div>
           </div>
         </div>
@@ -135,25 +102,25 @@
         <!-- beginning trending section -->
         <div class="column3">
           <h2 class="title is-4">Leave a comment </h2>
-            <form action="{% url 'share:create_comment' post.id %}" method="post">
+          <form action="{% url 'share:create_comment' post.id %}" method="post">
             {% csrf_token %}
-              <div class="field">
-                <div class="control">
-                  <textarea class="input is-warning" placeholder="Write a comment ..." id="comment_body" name="comment_body">
-                  </textarea>
-                </div>
+            <div class="field">
+              <div class="control">
+                <textarea class="input is-warning" placeholder="Write a comment ..." id="comment_body" name="comment_body">
+                </textarea>
               </div>
+            </div>
 
-                <div class="form-group">
-                  <button class="button is-success is-outlined" type="submit">Post Comment</button>&nbsp;
-                </div>
-            </form>
-        <!-- end trending section -->
+            <div class="form-group">
+              <button class="button is-success is-outlined" type="submit">Post Comment</button>&nbsp;
+            </div>
+          </form>
+          <!-- end trending section -->
 
+        </div>
       </div>
-    </div>
-  </section>
-</body>
+    </section>
+  </body>
 
 
-{% endblock content %}
+  {% endblock content %}

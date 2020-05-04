@@ -13,7 +13,7 @@
 <body>
 <nav class="navbar is-warning" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-        <a class="navbar-item" href="{% url 'share:index' %}">
+        <a class="navbar-item" href="{% url 'share:dashboard' %}">
             <img src="{% static 'share/images/bow_06_t.PNG' %}" alt=" icon">
             <h1 class="title is-size-4" style="font-family: sans-serif,times"> Artemis's Playground </h1>
         </a>
@@ -85,7 +85,7 @@
                          <a class="navbar-item" href="{% url 'share:edit_profile' user.id %}">Settings</a>
                        </li>
                        <li>
-                         <a class="navbar-item" href="{% url 'share:logout' %}">Logout {{user.username}}</a>
+                         <a class="navbar-item" href="{% url 'share:logout' %}">Logout</a>
                        </li>
                       </ul>
                      {% endif %}

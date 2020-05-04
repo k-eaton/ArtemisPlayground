@@ -2,6 +2,9 @@
 {% extends "share/base.html" %}
 {% block content %}
 
+{% if error %}
+  		<h3 class="title is-3" style="color: red">{{ error }}</h3>
+{% endif %}
 <link rel="stylesheet" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\bulma-0.8.0\css\bulma.min.css">
 <script defer src="https://use.fontawesome.com/releases/v5.0.6/css/all.css"></script>
 <link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css">
@@ -22,26 +25,6 @@
         <div class="column1">
           <!--  <p> this is a test, should be on the right</p> -->
 
-          <!-- insert buttons: Group-Finder & Chat -->
-          <div class="buttons">
-            <ul>
-              <li>
-                <!-- Group Finder Button -->
-                <button class="button is-medium is-warning is-light is-outlined">
-                   <span class="is-outlined">
-                     <i class="fab fa-Group Finder"></i>
-                   </span>
-                   <span>Group Finder</span>
-                 </button>
-              </li>
-              <li>
-                 <!-- Chat Button -->
-                <button class="button is-medium is-warning is-light is-outlined">
-                  <span>Chat</span>
-                </button>
-              </li>
-            </ul>
-          </div>
 
         </div>
         <!-- end chat section -->
@@ -50,101 +33,59 @@
         <div class="column2">
           <hr>
           {% if latest_post_list %}
-            {% for p in latest_post_list %}
+          {% for p in latest_post_list %}
             <!-- user info -->
             <div class="notification is-warning is-light">
-              <section class="section is-paddingless-horizontal" style="padding-top:0;">
-                <div class="container">
-                  <article class="media center">
-                    <figure class="media-left">
-                      <figure class="image is-64x64">
-                        <a href="{% url 'share:user_profile' p.user.id%}"><img src="{{user.profile.icon.url}}"></a>
-                      </figure>
+            <section class="section is-paddingless-horizontal" style="padding-top:0;">
+              <div class="container">
+                <article class="media center">
+                  <figure class="media-left">
+                    <figure class="image is-64x64">
+                      <a href="{% url 'share:visit_user_page' p.user.id %}">
+                        <img src="{{ my_profile.icon.photo.url }}">
+                      </a>
                     </figure>
-                    <div class="media-content">
-                      <div class="content">
-                        <p>
-                          <strong>{{ p.user.first_name}} {{ p.user.last_name }}</strong>
-                          <a style="text-decoration:none" href="{% url 'share:user_profile' p.user.id%}">@{{ p.user.username }}</a><br>
-                          <span class="has-text-grey"><time datetime="{{ p.post_created }}">{{ p.post_created }}</time></span>
-                        </p>
-                      </div>
+                  </figure>
+                  <div class="media-content">
+                    <div class="content">
+                      <p>
+                        <strong>{{ p.user.first_name}} {{ p.user.last_name }}</strong>
+                        <a style="text-decoration:none" href="{% url 'share:visit_user_page' p.user.id %}">@{{ p.user.username }}</a><br>
+                        <span class="has-text-grey"><time datetime="{{ p.post_created }}">{{ p.post_created }}</time></span>
+                      </p>
                     </div>
-                  </article>
-                </div>
-              </section>
-              <!-- Username info -->
-              <!-- for posts with only text-->
-              {% if not p.post_header and not p.photo %}
-                <div class="content">
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <!-- Username info -->
+
+            <div class="content">
+              {% if p.photo.photo %}
+                <figure class="image">
                   <a href="{% url 'share:show_post' p.id %}">
-                    <p>{{ p.post_body }}</p>
+                    <img src="{{ p.photo.photo.url }}">
                   </a>
-                </div>
-
-              <!-- for posts with only photos-->
-              {% elif not p.post_header and not p.post_body %}
-                <div class="content">
-                    <figure class="image is-square">
-                      <a href="{% url 'share:show_post' p.id %}">
-                        <img src="{{ p.photo }}">
-                      </a>
-                    </figure>
-                </div>
-
-              <!-- for posts with only headers -->
-              {% elif not p.post_body and not p.photo %}
-                <div class="content">
-                  <a href="{% url 'share:show_post' p.id %}">
-                    <h1 class="title is-size-3">{{ p.post_header }}</h1>
-                  </a>
-                </div>
-
-              <!--for regular posts -->
-              {% else %}
-                <div class="content">
-                    <figure class="image is-square">
-                      <a href="{% url 'share:show_post' p.id %}">
-                        <img src="{{ p.photo }}">
-                      </a>
-                    </figure>
-                    <a href="{% url 'share:show_post' p.id %}">
-                      <h1 class="title is-size-3">{{ p.post_header }}</h1>
-                    </a>
-                    <p style="font-size:120%;">{{ p.post_body }}</p>
-                </div>
-
+                </figure>
+              {% endif %}
+              {% if p.post_header %}
+                <a href="{% url 'share:show_post' p.id %}">
+                  <h1 class="title is-size-3">{{ p.post_header }}</h1>
+                </a>
+              {% endif %}
+              {% if p.post_body %}
+                <p style="font-size:120%;">{{ p.post_body }}</p>
               {% endif %}
             </div>
-            {% endfor %}
+            </div>
+          {% endfor %}
           {% endif %}
         <!-- end main feed section -->
 
         <!-- beginning trending section -->
         <div class="column3">
-          <!-- <p> this is a test, should be on the right </p> -->
-          <!-- the idea hear is to show an image that is trending/has the highest amount of reblogs/likes/upvotes etc...-->
-          <!-- <figure class="image is-primary is-256x256">
-            <img src="static\share\images\diablo.jpeg" alt="diablo">
 
-            <br>
-            <h2 style="color:#996633"; class="title is-4"> Diablo 3 Fan Art </h2>
-            <div class="tags are-normal">
-              <span class="tag is-warning is-light">#Diablo</span>
-              <span class="tag is-warning is-light">#blizzard</span>
-              <span class="tag is-warning is-light">#Diablo 3</span>
-              <span class="tag is-warning is-light">#D3</span>
-            </div>
-          </figure>
-          <br>
-          <br>
-          <h1 style="color:#cc0000"; class="title is-4"> Trending </h1>
-          <div class="tags are-large">
-            <span class="tag is-danger is-light">blizzard</span>
-            <span class="tag is-danger is-light">Unity</span>
-            <span class="tag is-danger is-light">Skyrim</span>
-            <span class="tag is-danger is-light">Overwatch</span>
-          </div> -->
         </div>
         <!-- end trending section -->
 

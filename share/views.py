@@ -29,17 +29,14 @@ import random
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-
-            random_idx = random.randint(0, Post.objects.count()-1)
-            random_post = Post.objects.all()[random_idx]
-
-
-            # all_posts = Post.objects.all()   # all_posts is a list object [   ]
-
-            return render(request, "share/index.html", {"random_post":random_post})
-
+            return render(request, "share/dashboard.html")
         else:
-            return redirect("share:login")
+            # random_idx = random.randint(0, Post.objects.count()-1)
+            # random_post = Post.objects.all()[random_idx]
+            #
+            #
+            # # all_posts = Post.objects.all()   # all_posts is a list object [   ]
+            return render(request, "share/index.html")
     else:
         return HttpResponse(status=500)
 
@@ -108,10 +105,22 @@ def logout_view(request):
 #iserrano3
 def dashboard(request):
     if request.method == "GET":
-        if request.user.is_authenticated:
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
 
-            latest_post_list = Post.objects.order_by('post_created')[::-1]
+        else:
+
+            friend = Friend.objects.get(current_user=user.id)
+            friends = friend.users.all()
+
+            post_list = Post.objects.filter(friends)
+            latest_post_list=post_list.order_by('post_created')[::-1]
             template = loader.get_template('share/dashboard.html')
+
+            # latest_post_list=Post.objects.order_by('post_created')[::-1]
+            # template = loader.get_template('share/dashboard.html')
+
             context = {
                 'latest_post_list':latest_post_list
             }
@@ -120,8 +129,6 @@ def dashboard(request):
             #the line below is another way or writing the return statement
             # return HttpResponse(template.render(content, request))
 
-        else:
-            return redirect("share:login", {"user":user, "error":"Please Login"})
     else:
         return HttpResponse(status=500)
 
@@ -129,28 +136,40 @@ def dashboard(request):
 
 def user_profile(request, user_id):
     if request.method == "GET":
-        # user = request.user
-        if request.user.is_authenticated:
+        user = request.user
+        if not user.is_authenticated:
+            return redirect("share:login", {"user":user, "error":"Please Login"})
 
-        # if not user.is_authenticated:
-            # return redirect("share:login", {"user":user, "error":"Please Login"})
-            user = get_object_or_404(User, pk=user_id)
+        user_page = get_object_or_404(User, pk=user_id)
+        my_posts = Post.objects.filter(user=user.id)
+        my_profile = Profile.objects.get(user=user.id)
+        print("my_profile: ", my_profile)
 
-            my_posts = Post.objects.filter(user=user.id)
-            my_profile = Profile.objects.get(user=user.id)
-            print("my_profile: ", my_profile)
+        friend, created = Friend.objects.get_or_create(current_user=user.id)
+        friends = friend.users.all()
 
-            friend = Friend.objects.get_or_create(current_user=request.user)
-            friends = Friend.objects.all()
+        parameters = {
+            "user_page":user_page,
+            "my_posts":my_posts,
+            "my_profile":my_profile,
+            "friends":friends,
+        }
+        return render(request, "share/user_profile.html", parameters)
 
-            parameters = {
-                "user":user,
-                "my_posts":my_posts,
-                "my_profile":my_profile,
-                "friend":friend,
-                "friends":friends
-            }
-            return render(request, "share/user_profile.html", parameters)
+def visit_user_page(request, user_id):
+    if request.method=="GET":
+        user = get_object_or_404(User, pk=user_id)
+        user_posts = Post.objects.get(user=user.id)
+        user_profile = Profile.objects.get(user=user.id)
+        user_friends = Friend.objects.filter(current_user=user.id)
+
+        parameters = {
+            "user":user,
+            "user_posts":user_posts,
+            "user_profile":user_profile,
+            "user_friends":user_friends,
+        }
+        return render(request, "share/user_profile.html", parameters)
 
 #iserrano4
 def edit_profile(request, user_id):
@@ -193,7 +212,7 @@ def update_profile(request, user_id):
             email = request.POST.get('email')
             icon = request.FILES.get("icon")
             # password = request.POST['password']
-            
+
             # create Photo object
             photo = Photo.objects.create(user = user, photo = icon)
 
@@ -242,7 +261,7 @@ def show_post(request, post_id):
         else:
             post = get_object_or_404(Post, pk=post_id)
 
-            # comments = Comment.objects.filter(post=post_id)
+            comments = Comment.objects.filter(post=post_id)
             # user_comment = Comment.objects.filter(user=user.id).filter(post=post.id)
 
         return render(request, "share/post.html", {"post":post})
@@ -459,12 +478,13 @@ def search(request):
 
 #iserrano7
 def change_friends(request, operation, pk):
-    friend=User.objects.get(pk=pk)
+    new_friend=User.objects.get(pk=pk)
     if operation == 'add':
-        Friend.add_friend(request.user, friend)
+        Friend.add_friend(request.user, new_friend)
+        return render(request, "share/dashboard.html", {"error":"Now following new user!"})
     elif operation == 'remove':
-        Friend.remove_friend(request.user, friend)
-    return render(request, "share/dashboard.html", {"error":"Now following {{friend.users.username}}!"})
+        Friend.remove_friend(request.user, new_friend)
+        return render(request, "share/dashboard.html", {"error":"No longer following user"})
 
 # def add_friends(request, pk):
 #     if request.method == "POST":
