@@ -36,7 +36,7 @@ def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
             count = Post.objects.all().count()
-            if count > 0:
+            if count > 1:
                 rand_ids = sample(range(1, count), 3)
                 select = Post.objects.filter(id__in=rand_ids)
             else:
