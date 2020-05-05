@@ -186,14 +186,14 @@ def user_profile(request, user_id):
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
         user_page = get_object_or_404(User, pk=user_id)
-        my_posts = Post.objects.filter(user=user_id)
+        post_list = Post.objects.filter(user=user_id)
         my_profile = Profile.objects.get(user=user_id)
         profile_for_user = User.objects.filter(pk=user_id)[0]
         print("my_profile: ", my_profile)
-
+        my_posts = sorted(post_list, key=lambda x: x.post_created, reverse=True)
         # gathering friends
         # user_for_friends = User.objects.filter(pk=user_id )
-        print("User_for_friends: ", profile_for_user)
+        # print("User_for_friends: ", profile_for_user)
         friend = Friend.objects.get_or_create(current_user=profile_for_user)
         try:
             friends = friend[0].users.all()
