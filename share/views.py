@@ -36,7 +36,7 @@ def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
             count = Post.objects.all().count()
-            if count > 1:
+            if count > 3:
                 rand_ids = sample(range(1, count), 3)
                 select = Post.objects.filter(id__in=rand_ids)
             else:
@@ -48,17 +48,10 @@ def index(request):
             }
 
             return render(request, "share/index.html", context)
+        
         else:
-            count = Post.objects.all().count()
-            rand_ids = sample(range(1, count), 3)
-            select = Post.objects.filter(id__in=rand_ids)
+            return redirect("share:signup")
 
-            context = {
-                # 'latest_post_list':latest_post_list
-                "select":select
-            }
-
-            return render(request, "share/index.html", context)
     else:
         return HttpResponse(status=500)
 
