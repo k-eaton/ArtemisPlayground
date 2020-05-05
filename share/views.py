@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404 #iserrano4
 from django.shortcuts import get_list_or_404 #iserrano4
 from .models import Media, Post, Comment, Photo, Profile, Friend, Follower
 from django.template import RequestContext
+from django.contrib import messages
 
 # helper methods
 from .utils import get_date_stamp
@@ -109,6 +110,7 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            messages.add_message(request, messages.ERROR, "Welcome!")
             return redirect("share:dashboard")
         else:
             return render(request, "share/login.html", {"error":"Wrong username or password"})
@@ -156,13 +158,20 @@ def dashboard(request):
 
                 latest_post_list = sorted(post_list, key=lambda x: x.post_created, reverse=True)
                 
-            parameters = {
-                'latest_post_list':latest_post_list
-            }
+            
 
             if len(latest_post_list) == 0:
+                parameters = {
+                    "error":"You have to add some friends to have a dashboard!\nHere are some suggestions:"
+                }
+
                 return redirect("share:index")
+
             else:
+                parameters = {
+                    'latest_post_list':latest_post_list
+                }
+
                 return render(request, "share/dashboard.html", parameters)
     else:
         return HttpResponse(status=500)
@@ -521,10 +530,12 @@ def change_friends(request, operation, pk):
     new_friend=User.objects.get(pk=pk)
     if operation == 'add':
         Friend.add_friend(request.user, new_friend)
-        return render(request, "share/dashboard.html", {"error":"Now following new user!"})
-    elif operation == 'remove':
-        Friend.remove_friend(request.user, new_friend)
-        return render(request, "share/dashboard.html", {"error":"No longer following user"})
+        messages.add_message(request, messages.ERROR, "Now following new user!")
+        return redirect("share:dashboard")
+        # return render(request, "share/dashboard.html", {"error":"Now following new user!"})
+    # elif operation == 'remove':
+    #     Friend.remove_friend(request.user, new_friend)
+    #     return render(request, "share/dashboard.html", {"error":"No longer following user"})
 
 # def change_friends(request, operation, pk):
 #     # new_friend=User.objects.get(pk=pk)

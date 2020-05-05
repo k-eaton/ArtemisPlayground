@@ -32,6 +32,40 @@
 <div class="columns">
   <!-- beginning of section 1 -->
   <div class="column1">
+    {% if profile_for_user != request.user.id %}
+    <hr>
+      <!-- Follow Button; figure out how to swap follow and unfollow -->
+
+      <div class="buttons">
+        <ul>
+
+          <li>
+            {% if not user in friends %}
+            <!-- <a href="{% url 'share:change_friends' operation='add' pk=user.id %}"> -->
+            <a href="{% url 'share:change_friends' operation='add' pk=profile_for_user %}">   
+            <button class="button is-medium is-dark is-outlined">
+              <span class="is-outlined is-dark">
+                  <i class="fab fa-Follow Me"></i>
+              </span>
+              <span>Follow Me!</span>
+            </button>
+            </a>
+            {% else %}
+            <a href="{% url 'share:change_friends' operation='remove' pk=user.id %}">
+            <button class="button is-medium is-dark is-outlined">
+              <span class="is-outlined">
+                  <i class="fab fa-Unfollow"></i>
+              </span>
+              <span>Unfollow</span>
+            </button>
+            </a>
+          {% endif %}
+          </li>
+
+        </ul>
+      </div>
+      {% endif %}
+
     <hr>
     <h1 class="title is-3"><span style="color:#1496ed">Following</span></h1>
     {% for friend in friends %}
@@ -47,7 +81,7 @@
     <hr>
     {% for p in my_posts %}
       <!-- user info -->
-      <div class="notification is-warning is-light">
+      <div class="notification is-dark">
       <section class="section is-paddingless-horizontal" style="padding-top:0;">
         <div class="container">
           <article class="media center">
@@ -96,17 +130,16 @@
 
 
     <!-- beginning section 3 -->
-    <div class="column3">
-      <hr>
+    <!-- <div class="column3">
+      <hr> -->
       <!-- Follow Button; figure out how to swap follow and unfollow -->
-      <div class="buttons">
+      <!-- <div class="buttons">
         <ul>
           <li>
             {% if not user in friends %}
-            <!-- <a href="{% url 'share:change_friends' operation='add' pk=user.id %}"> -->
             <a href="{% url 'share:change_friends' operation='add' pk=profile_for_user %}">   
-            <button class="button is-medium is-warning is-light is-outlined">
-              <span class="is-outlined">
+            <button class="button is-medium is-dark is-outlined">
+              <span class="is-outlined is-dark">
                   <i class="fab fa-Follow Me"></i>
               </span>
               <span>Follow Me!</span>
@@ -114,7 +147,7 @@
             </a>
             {% else %}
             <a href="{% url 'share:change_friends' operation='remove' pk=user.id %}">
-            <button class="button is-medium is-warning is-light is-outlined">
+            <button class="button is-medium is-dark is-outlined">
               <span class="is-outlined">
                   <i class="fab fa-Unfollow"></i>
               </span>
@@ -125,7 +158,7 @@
           </li>
 
           <li>
-            <button class="button is-medium is-warning is-light is-outlined">
+            <button class="button is-medium is-dark is-outlined">
               <span class="is-outlined">
                   <i class="fab fa-Message Me"></i>
               </span>
@@ -133,12 +166,12 @@
             </button>
           </li>
         </ul>
-      </div>
+      </div> -->
       <!-- Message button -->
 
 
 
-    </div>
+    <!-- </div> -->
     <!-- end of section 3 -->
 
     {% endblock content %}

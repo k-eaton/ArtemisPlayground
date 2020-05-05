@@ -4,7 +4,12 @@
 
 {% if error %}
   		<h3 class="title is-3" style="color: red">{{ error }}</h3>
-{% endif %}<!-- 
+{% endif %}
+{% if messages %}
+      <h3 class="title is-3" style="color: red">{{ messages.tags }}</h3>
+{% endif %}
+
+<!-- 
 <link rel="stylesheet" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\bulma-0.8.0\css\bulma.min.css">
 <script defer src="https://use.fontawesome.com/releases/v5.0.6/css/all.css"></script>
 <link rel="stylesheet" type="text/css" href="C:\Users\iserr\Documents\GitHub\AP-forked\ArtemisPlayground\share\static\share\main.css"> -->
@@ -33,7 +38,6 @@
         <div class="column2">
 
           {% for p in latest_post_list %}
-            <h1>A post!</h1>
             <!-- user info -->
             <div class="notification is-dark">
             <section class="section is-paddingless-horizontal" style="padding-top:0;">
@@ -80,7 +84,6 @@
             </div>
             </div>
           {% endfor %}
-          <!-- {% endif %} -->
         <!-- end main feed section -->
 
         <!-- beginning trending section -->
