@@ -57,7 +57,7 @@
                   <figure class="media-left">
                     <figure class="image is-64x64">
                       <a href="{% url 'share:visit_user_page' p.user.id %}">
-                        <img src="{{ my_profile.icon.photo.url }}">
+                        <img src="{{ p.user.profile.icon.photo.url }}">
                       </a>
                     </figure>
                   </figure>
@@ -101,7 +101,7 @@
         <!-- end main feed section -->
 
         <!-- beginning trending section -->
-        <div class="column3">
+        <!-- <div class="column3"> -->
           <!-- <p> this is a test, should be on the right </p> -->
           <!-- the idea hear is to show an image that is trending/has the highest amount of reblogs/likes/upvotes etc...-->
           <!-- <figure class="image is-primary is-256x256">
@@ -130,7 +130,7 @@
         </div> -->
         <!-- end trending section -->
 
-      </div>
+      <!-- </div> -->
     </div>
   </section>
 </body>
