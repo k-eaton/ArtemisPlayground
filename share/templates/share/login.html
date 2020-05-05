@@ -9,9 +9,9 @@
                     <h3 class="title is-3" style="color: red">{{ error }}</h3>
                   {% endif %}
 
-           <nav class="panel is-warning">
-            <p class="panel-heading" style="text-align:center">
-            <span><strong>Login</strong></span>
+           <nav class="panel is-dark">
+            <p class="panel-heading " style="text-align:center">
+            <span><strong class="has-text-light">Login</strong></span>
             </p>
 
             <div class="panel-block">
@@ -22,7 +22,7 @@
                       <div class="field">
                           <label class="label">Username</label>
                             <div class="control has-icons-left has-icons-right">
-                              <input class="input is-warning" type="text" placeholder="Username" name="username">
+                              <input class="input is-dark" type="text" placeholder="Username" name="username">
                               <span class="icon is-small is-left">
                                 <i class="fas fa-user"></i>
                               </span>
@@ -35,7 +35,7 @@
                       <div class="field">
                           <label class="label">Password</label>
                           <div class="control has-icons-left">
-                              <input class="input is-warning" name="password" placeholder="Password" type="password">
+                              <input class="input is-dark" name="password" placeholder="Password" type="password">
                               <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                               </span>
@@ -44,8 +44,8 @@
                       </div>
                       <div class="field">
                           <div class="control">
-                              <button class="button is-warning is-outlined is-fullwidth" type="submit" value="Login">Login</button>&nbsp;
-                              <a class="button is-warning is-outlined is-fullwidth" href="{% url 'share:signup' %}">Signup</a>
+                              <button class="button is-dark is-outlined is-fullwidth" type="submit" value="Login">Login</button>&nbsp;
+                              <a class="button is-dark is-outlined is-fullwidth" href="{% url 'share:signup' %}">Signup</a>
                            </div>
                       </div>
                   </form>

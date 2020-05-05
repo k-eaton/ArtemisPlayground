@@ -131,26 +131,39 @@ def dashboard(request):
             # try:
             friend = Friend.objects.get_or_create(current_user=user)
             print(friend[0])
-
-            friends = friend[0].users.all()
-            print(friends[0])
-
-            post_list = []
+            
+            # needs to exist before if statement
             latest_post_list = []
 
-            for frien in friends:
-                print("frien in friends: ", frien)
+            try:
+                friends = friend[0].users.all()
+                print(friends[0])
+            
+            except:
+                friends = False
 
-                posts = Post.objects.filter(user=frien.pk)
-                post_list.extend(posts)
+            if friends:
+                friends = friend[0].users.all()
+                print(friends[0])
 
-            latest_post_list = sorted(post_list, key=lambda x: x.post_created, reverse=True)
+                post_list = []
+
+                for frien in friends:
+                    print("frien in friends: ", frien)
+
+                    posts = Post.objects.filter(user=frien.pk)
+                    post_list.extend(posts)
+
+                latest_post_list = sorted(post_list, key=lambda x: x.post_created, reverse=True)
                 
             parameters = {
                 'latest_post_list':latest_post_list
             }
 
-            return render(request, "share/dashboard.html", parameters)
+            if len(latest_post_list) == 0:
+                return redirect("share:index")
+            else:
+                return render(request, "share/dashboard.html", parameters)
     else:
         return HttpResponse(status=500)
 
