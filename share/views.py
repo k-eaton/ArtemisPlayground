@@ -185,8 +185,29 @@ def user_profile(request, user_id):
         user_page = get_object_or_404(User, pk=user_id)
         my_posts = Post.objects.filter(user=user_id)
         my_profile = Profile.objects.get(user=user_id)
-        profile_for_user = user_id
+        profile_for_user = User.objects.filter(pk=user_id)[0]
         print("my_profile: ", my_profile)
+
+        # gathering friends
+        # user_for_friends = User.objects.filter(pk=user_id )
+        print("User_for_friends: ", profile_for_user)
+        friend = Friend.objects.get_or_create(current_user=profile_for_user)
+        try:
+            friends = friend[0].users.all()
+            print(friends[0])
+        
+        except:
+            friends = False
+
+        if friends:
+            friends = friend[0].users.all()
+            print(friends[0])
+
+        else:
+            friends = []
+            # post_list = []
+
+            # for frien in friends:
 
         # friend, created = Friend.objects.get_or_create(current_user=user.id)
         # friends = friend.users.all()
@@ -195,8 +216,8 @@ def user_profile(request, user_id):
             "user_page":user_page,
             "my_posts":my_posts,
             "my_profile":my_profile,
-            "profile_for_user":profile_for_user
-            # "friends":friends,
+            "profile_for_user":profile_for_user,
+            "friends":friends,
         }
         return render(request, "share/user_profile.html", parameters)
 
@@ -533,8 +554,10 @@ def change_friends(request, operation, pk):
         messages.add_message(request, messages.ERROR, "Now following new user!")
         return redirect("share:dashboard")
         # return render(request, "share/dashboard.html", {"error":"Now following new user!"})
-    # elif operation == 'remove':
-    #     Friend.remove_friend(request.user, new_friend)
+    elif operation == 'remove':
+        Friend.remove_friend(request.user, new_friend)
+        return redirect("share:dashboard")
+
     #     return render(request, "share/dashboard.html", {"error":"No longer following user"})
 
 # def change_friends(request, operation, pk):
