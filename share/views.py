@@ -36,8 +36,11 @@ def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
             count = Post.objects.all().count()
-            rand_ids = sample(range(1, count), 3)
-            select = Post.objects.filter(id__in=rand_ids)
+            if len(count) > 0:
+                rand_ids = sample(range(1, count), 3)
+                select = Post.objects.filter(id__in=rand_ids)
+            else:
+                select = []
 
             context = {
                 # 'latest_post_list':latest_post_list
