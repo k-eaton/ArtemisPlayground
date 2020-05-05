@@ -78,8 +78,16 @@ class Photo(models.Model):
     # title = models.CharField(max_length=100)
     photo = models.ImageField(upload_to=user_directory_path)
 
-class Friend(models.Model):
+class Follower(models.Model):
     users = models.ManyToManyField(User)
+    # @classmethod
+    # def make_friend(cls, current_user, new_friend):
+    #     follower, created = cls.objects.get_or_create(
+    #         current_user)
+            
+
+class Friend(models.Model):
+    users = models.ManyToManyField(User, related_name = 'friend')
     current_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner', null=True)
 
     @classmethod

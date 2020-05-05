@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Coder, Problem, Script, Media, Post, Comment, Photo, Profile, Friend
+from .models import Coder, Problem, Script, Media, Post, Comment, Photo, Profile, Friend, Follower
 
 
 admin.site.register(Problem)
@@ -16,3 +16,4 @@ admin.site.register(Comment)
 admin.site.register(Profile)
 #iserrano7
 admin.site.register(Friend)
+admin.site.register(Follower)

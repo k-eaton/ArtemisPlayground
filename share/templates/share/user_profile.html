@@ -103,7 +103,8 @@
         <ul>
           <li>
             {% if not user in friends %}
-            <a href="{% url 'share:change_friends' operation='add' pk=user.id %}">
+            <!-- <a href="{% url 'share:change_friends' operation='add' pk=user.id %}"> -->
+            <a href="{% url 'share:change_friends' operation='add' pk=profile_for_user %}">   
             <button class="button is-medium is-warning is-light is-outlined">
               <span class="is-outlined">
                   <i class="fab fa-Follow Me"></i>

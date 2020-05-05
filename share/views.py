@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 
 from django.shortcuts import get_object_or_404 #iserrano4
 from django.shortcuts import get_list_or_404 #iserrano4
-from .models import Media, Post, Comment, Photo, Profile, Friend
+from .models import Media, Post, Comment, Photo, Profile, Friend, Follower
 from django.template import RequestContext
 
 # helper methods
@@ -24,6 +24,8 @@ from django.conf import settings
 # from django.core.files.storage import FileSystemStorage
 from django.template import loader
 import random
+from random import sample
+
 
 
 # Create your views here.
@@ -32,14 +34,27 @@ import random
 def index(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            return render(request, "share/dashboard.html")
+            count = Post.objects.all().count()
+            rand_ids = sample(range(1, count), 3)
+            select = Post.objects.filter(id__in=rand_ids)
+
+            context = {
+                # 'latest_post_list':latest_post_list
+                "select":select
+            }
+
+            return render(request, "share/index.html", context)
         else:
-            # random_idx = random.randint(0, Post.objects.count()-1)
-            # random_post = Post.objects.all()[random_idx]
-            #
-            #
-            # # all_posts = Post.objects.all()   # all_posts is a list object [   ]
-            return render(request, "share/index.html")
+            count = Post.objects.all().count()
+            rand_ids = sample(range(1, count), 3)
+            select = Post.objects.filter(id__in=rand_ids)
+
+            context = {
+                # 'latest_post_list':latest_post_list
+                "select":select
+            }
+
+            return render(request, "share/index.html", context)
     else:
         return HttpResponse(status=500)
 
@@ -113,72 +128,31 @@ def dashboard(request):
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
         else:
-            try:
-                friend = Friend.objects.get(current_user=user.id)
-            except:
-                friend = False;
-            if friend:
-                # friends = friend.users.filter(user=user.id)
-                latest_post_list = []
-                friends = []
-                friends.extend(friend.users.all())
-                print("friends in dashboard: ", friends)
+            # try:
+            friend = Friend.objects.get_or_create(current_user=user)
+            print(friend[0])
+
+            friends = friend[0].users.all()
+            print(friends[0])
+
+            post_list = []
+            latest_post_list = []
+
+            for frien in friends:
+                print("frien in friends: ", frien)
+
+                posts = Post.objects.filter(user=frien.pk)
+                post_list.extend(posts)
+
+            latest_post_list = sorted(post_list, key=lambda x: x.post_created, reverse=True)
                 
-                post_list = []
-                latest_post_list = []
+            parameters = {
+                'latest_post_list':latest_post_list
+            }
 
-                # flips out if friends list is shorter than 2
-                # for multiple friends:
-
-                if len(friends) > 1:
-                    for frien in friends:
-                        posts = Post.objects.get(frien)
-
-                        # again flips out if array shorter than 2
-                        if len(posts) > 1:
-                            post_list.extend(posts)
-
-                        # if only one post
-                        else:
-                            post_list.add(posts)
-                    print("post_list in dashboard: ", post_list)
-
-                # if one friend
-                else:
-                    posts = Post.objects.filter(user=friends.pop(0).id)
-                    # posts = friends.pop.posts.all()
-
-                    # again flips out if array shorter than 2
-                    if len(posts) > 1:
-                        post_list.extend(posts)
-                        # latest_post_list=post_list.sort(key=get_date_stamp) #[::-1]
-                        latest_post_list = sorted(post_list, key=lambda x: x.post_created, reverse=True)
-
-                    # if only one post
-                    else:
-                        latest_post_list = posts
-                    print("Fewer than 2 friends in dashboard")
-                # latest_post_list=post_list.order_by('post_created')[::-1]
-                # template = loader.get_template('share/dashboard.html')
-
-                # latest_post_list=Post.objects.order_by('post_created')[::-1]
-                # template = loader.get_template('share/dashboard.html')
-
-                parameters = {
-                    # 'post_list':post_list,
-                    'latest_post_list':latest_post_list
-                }
-
-                return render(request, "share/dashboard.html", parameters)
-                #the line below is another way or writing the return statement
-                # return HttpResponse(template.render(content, request))
-            else:
-                return redirect("share:index")
-
+            return render(request, "share/dashboard.html", parameters)
     else:
         return HttpResponse(status=500)
-
-
 
 def user_profile(request, user_id):
     if request.method == "GET":
@@ -187,8 +161,9 @@ def user_profile(request, user_id):
             return redirect("share:login", {"user":user, "error":"Please Login"})
 
         user_page = get_object_or_404(User, pk=user_id)
-        my_posts = Post.objects.filter(user=user.id)
-        my_profile = Profile.objects.get(user=user.id)
+        my_posts = Post.objects.filter(user=user_id)
+        my_profile = Profile.objects.get(user=user_id)
+        profile_for_user = user_id
         print("my_profile: ", my_profile)
 
         # friend, created = Friend.objects.get_or_create(current_user=user.id)
@@ -198,6 +173,7 @@ def user_profile(request, user_id):
             "user_page":user_page,
             "my_posts":my_posts,
             "my_profile":my_profile,
+            "profile_for_user":profile_for_user
             # "friends":friends,
         }
         return render(request, "share/user_profile.html", parameters)
@@ -536,6 +512,22 @@ def change_friends(request, operation, pk):
     elif operation == 'remove':
         Friend.remove_friend(request.user, new_friend)
         return render(request, "share/dashboard.html", {"error":"No longer following user"})
+
+# def change_friends(request, operation, pk):
+#     # new_friend=User.objects.get(pk=pk)
+#     # if operation == 'add':
+#     followers = Follower()
+#     followers.save()
+#     followers.users.add(User.objects.filter(pk), request.user)
+
+    # pair_of_users = [Users.filter(pk), request.user]
+    # followers.users.set(pair_of_users)
+
+    return render(request, "share/dashboard.html")
+
+
+
+
 
 # def add_friends(request, pk):
 #     if request.method == "POST":
